@@ -5,54 +5,189 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        :root {
+            --color-white: #ffffff;
+            --color-gray-light: #f8f8f8;
+            --color-gray-medium: #e9e9e9;
+            --color-text: #333333;
+        }
+
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            background-color: transparent;
         }
 
         .navbar.visible {
-            transform: translateY(0);
+            background-color: var(--color-white);
+            padding: 1rem 4rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #333;
+            color: white;
             text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.visible .logo {
+            color: #333;
         }
 
         .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.visible .nav-links a {
+            color: #333;
+        }
+
+        .nav-icons {
             display: flex;
             gap: 2rem;
             align-items: center;
         }
 
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
         .nav-icons a {
-            color: #333;
+            color: white;
             text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.visible .nav-icons a {
+            color: #333;
+        }
+
+        /* Section Les Plus Vendus */
+        .best-sellers {
+            padding: 4rem 0;
+            background-color: var(--color-gray-light);
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--color-text);
+            margin-bottom: 3rem;
+            padding-left: 4rem;
+        }
+
+        .products-slider {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 0 4rem;
+        }
+
+        .products-container {
+            display: flex;
+            gap: 2rem;
+            transition: transform 0.5s ease;
+            padding: 0 1rem;
+        }
+
+        .product-card {
+            flex: 0 0 calc(33.333% - 2rem);
+            background: var(--color-white);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+        }
+
+        .product-card.clone {
+            pointer-events: none;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-card img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .product-subtitle {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: var(--color-white);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .slider-nav:hover {
+            background: var(--color-gray-medium);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .slider-nav.prev {
+            left: 1rem;
+        }
+
+        .slider-nav.next {
+            right: 1rem;
+        }
+
+        .slider-nav i {
+            color: var(--color-text);
+            font-size: 1.2rem;
         }
 
         .hero-section {
@@ -71,14 +206,23 @@
             position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            overflow: hidden;
+            z-index: 1;
         }
 
         .video-background video {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
             object-fit: cover;
         }
 
@@ -89,12 +233,12 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            z-index: 0;
+            z-index: 2;
         }
 
         .content {
             position: relative;
-            z-index: 1;
+            z-index: 3;
             max-width: 800px;
             padding: 20px;
         }
@@ -126,6 +270,15 @@
             background-color: #f8f8f8;
             transform: translateY(-2px);
         }
+
+        /* Ajustement des sections pour alterner les fonds */
+        section:nth-child(odd) {
+            background-color: var(--color-white);
+        }
+
+        section:nth-child(even) {
+            background-color: var(--color-gray-light);
+        }
     </style>
 {% endblock %}
 
@@ -133,19 +286,99 @@
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll
             const navbar = document.querySelector('.navbar');
             let lastScroll = 0;
 
             window.addEventListener('scroll', () => {
                 const currentScroll = window.pageYOffset;
-                
-                if (currentScroll > 100) {
+                if (currentScroll > 50) {
                     navbar.classList.add('visible');
                 } else {
                     navbar.classList.remove('visible');
                 }
-                
                 lastScroll = currentScroll;
+            });
+
+            // Infinite slider
+            const container = document.querySelector('.products-container');
+            const prevBtn = document.querySelector('.slider-nav.prev');
+            const nextBtn = document.querySelector('.slider-nav.next');
+            const cards = document.querySelectorAll('.product-card');
+            
+            // Clone first and last sets of cards
+            const firstCards = Array.from(cards).slice(0, 3);
+            const lastCards = Array.from(cards).slice(-3);
+            
+            // Add clones to the container
+            lastCards.forEach(card => {
+                const clone = card.cloneNode(true);
+                clone.classList.add('clone');
+                container.insertBefore(clone, container.firstChild);
+            });
+            
+            firstCards.forEach(card => {
+                const clone = card.cloneNode(true);
+                clone.classList.add('clone');
+                container.appendChild(clone);
+            });
+
+            let currentIndex = 1; // Start at 1 to account for cloned cards
+            let isTransitioning = false;
+
+            function updateSlider(smooth = true) {
+                const slideWidth = cards[0].offsetWidth + 32; // width + gap
+                container.style.transition = smooth ? 'transform 0.5s ease' : 'none';
+                container.style.transform = `translateX(-${currentIndex * slideWidth * 3}px)`;
+            }
+
+            function slideNext() {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                currentIndex++;
+                updateSlider();
+            }
+
+            function slidePrev() {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                currentIndex--;
+                updateSlider();
+            }
+
+            // Handle infinite scroll transitions
+            container.addEventListener('transitionend', () => {
+                isTransitioning = false;
+                const totalSets = cards.length / 3;
+                
+                if (currentIndex >= totalSets + 1) {
+                    currentIndex = 1;
+                    updateSlider(false);
+                }
+                
+                if (currentIndex <= 0) {
+                    currentIndex = totalSets;
+                    updateSlider(false);
+                }
+            });
+
+            // Initialize slider position
+            updateSlider(false);
+
+            // Event listeners for navigation
+            prevBtn.addEventListener('click', slidePrev);
+            nextBtn.addEventListener('click', slideNext);
+
+            // Auto slide every 5 seconds
+            let autoSlideInterval = setInterval(slideNext, 5000);
+
+            // Pause auto slide on hover
+            container.addEventListener('mouseenter', () => {
+                clearInterval(autoSlideInterval);
+            });
+
+            container.addEventListener('mouseleave', () => {
+                autoSlideInterval = setInterval(slideNext, 5000);
             });
         });
     </script>
@@ -170,9 +403,8 @@
 
     <section class="hero-section">
         <div class="video-background">
-            <video autoplay muted loop>
+            <video autoplay muted loop playsinline>
                 <source src="{{ asset('videos/accueil.webm') }}" type="video/webm">
-                Votre navigateur ne supporte pas la lecture de vidéos.
             </video>
         </div>
         <div class="overlay"></div>
@@ -180,6 +412,27 @@
             <h1>Découvrez notre collection de montres de luxe</h1>
             <p class="subtitle">L'élégance au poignet, la précision dans chaque détail</p>
             <a href="#" class="cta-button">Voir la collection</a>
+        </div>
+    </section>
+
+    <section class="best-sellers">
+        <h2 class="section-title">Les Plus Vendus</h2>
+        <div class="products-slider">
+            <button class="slider-nav prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="products-container">
+                {% for i in 1..6 %}
+                    <div class="product-card">
+                        <img src="{{ asset('images/test.webp') }}" alt="Montre Royal Oak">
+                        <h3 class="product-title">Montre Royal Oak</h3>
+                        <p class="product-subtitle">Edition limitée</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="slider-nav next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </section>
 {% endblock %}
