@@ -279,6 +279,223 @@
         section:nth-child(even) {
             background-color: var(--color-gray-light);
         }
+
+        /* Espace Particuliers Section */
+        .particuliers {
+            padding: 6rem 0;
+            text-align: center;
+            background-color: var(--color-white);
+        }
+
+        .particuliers-title {
+            font-size: 2.5rem;
+            color: var(--color-text);
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .particuliers-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .sell-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: #666;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            margin-bottom: 4rem;
+            transition: all 0.3s ease;
+        }
+
+        .sell-button:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+        }
+
+        .watches-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .watch-card {
+            flex: 1;
+            max-width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .watch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .watch-card img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .watch-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .watch-title {
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .watch-state {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .watch-price {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .watch-seller {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .contact-button:hover {
+            background-color: #eee;
+            transform: translateY(-2px);
+        }
+
+        /* Notre Équipe Section */
+        .team {
+            padding: 6rem 0;
+            text-align: center;
+            background-color: var(--color-gray-light);
+        }
+
+        .team-title {
+            font-size: 2.5rem;
+            color: var(--color-text);
+            margin-bottom: 4rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .team-card {
+            flex: 1;
+            max-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .team-member-name {
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .team-member-role {
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .footer-text {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-contact {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-contact:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+        }
     </style>
 {% endblock %}
 
@@ -435,4 +652,77 @@
             </button>
         </div>
     </section>
+
+    <section class="particuliers">
+        <h2 class="particuliers-title">Espace Particuliers</h2>
+        <p class="particuliers-subtitle">Achetez et vendez vos montres de luxe entre passionnés</p>
+        <a href="#" class="sell-button">Vendre ma montre</a>
+        
+        <div class="watches-grid">
+            <div class="watch-card">
+                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
+                <h3 class="watch-title">Rolex Datejust 41</h3>
+                <p class="watch-state">État: Excellent</p>
+                <p class="watch-price">Prix: 8,500 €</p>
+                <p class="watch-seller">John Doe</p>
+                <a href="#" class="contact-button">Contacter le vendeur</a>
+            </div>
+            
+            <div class="watch-card">
+                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
+                <h3 class="watch-title">Rolex Datejust 41</h3>
+                <p class="watch-state">État: Excellent</p>
+                <p class="watch-price">Prix: 8,500 €</p>
+                <p class="watch-seller">John Doe</p>
+                <a href="#" class="contact-button">Contacter le vendeur</a>
+            </div>
+            
+            <div class="watch-card">
+                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
+                <h3 class="watch-title">Rolex Datejust 41</h3>
+                <p class="watch-state">État: Excellent</p>
+                <p class="watch-price">Prix: 8,500 €</p>
+                <p class="watch-seller">John Doe</p>
+                <a href="#" class="contact-button">Contacter le vendeur</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="team">
+        <h2 class="team-title">Notre Équipe</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <h3 class="team-member-name">John Doe</h3>
+                <p class="team-member-role">Développeur</p>
+            </div>
+            
+            <div class="team-card">
+                <h3 class="team-member-name">John Doe</h3>
+                <p class="team-member-role">Développeur</p>
+            </div>
+            
+            <div class="team-card">
+                <h3 class="team-member-name">John Doe</h3>
+                <p class="team-member-role">Développeur</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">À propos</h3>
+                <p class="footer-text">LuxWatch - Votre destination pour les montres de luxe</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Contact</h3>
+                <a href="mailto:contact@luxwatch.com" class="footer-contact">Email: contact@luxwatch.com</a>
+                <a href="tel:+33123456789" class="footer-contact">Tél: +33 1 23 45 67 89</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 LuxWatch. Tous droits réservés.</p>
+        </div>
+    </footer>
 {% endblock %}
