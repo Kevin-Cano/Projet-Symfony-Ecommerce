@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InvoiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
@@ -10,27 +12,35 @@ class Invoice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'invoices')]
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(type: "string", length: 20)]
-    private ?string $phoneNumber = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[ORM\Column(type: "string", length: 10)]
+    #[ORM\Column(length: 255)]
     private ?string $postalCode = null;
 
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[ORM\Column(type: "string", length: 50)]
-    private ?string $deliveryMode = null;
+    /**
+     * @var Collection<int, CartItem>
+     */
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'invoice')]
+    private Collection $cart;
+
+    public function __construct()
+    {
+        $this->cart = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -45,17 +55,19 @@ class Invoice
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
-    public function getPhoneNumber(): ?string
+    public function getPhone(): ?string
     {
-        return $this->phoneNumber;
+        return $this->phone;
     }
 
-    public function setPhoneNumber(string $phoneNumber): static
+    public function setPhone(?string $phone): static
     {
-        $this->phoneNumber = $phoneNumber;
+        $this->phone = $phone;
+
         return $this;
     }
 
@@ -67,6 +79,7 @@ class Invoice
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
         return $this;
     }
 
@@ -78,6 +91,7 @@ class Invoice
     public function setPostalCode(string $postalCode): static
     {
         $this->postalCode = $postalCode;
+
         return $this;
     }
 
@@ -89,17 +103,37 @@ class Invoice
     public function setCity(string $city): static
     {
         $this->city = $city;
+
         return $this;
     }
 
-    public function getDeliveryMode(): ?string
+    /**
+     * @return Collection<int, CartItem>
+     */
+    public function getCart(): Collection
     {
-        return $this->deliveryMode;
+        return $this->cart;
     }
 
-    public function setDeliveryMode(string $deliveryMode): static
+    public function addCart(CartItem $cart): static
     {
-        $this->deliveryMode = $deliveryMode;
+        if (!$this->cart->contains($cart)) {
+            $this->cart->add($cart);
+            $cart->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(CartItem $cart): static
+    {
+        if ($this->cart->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getInvoice() === $this) {
+                $cart->setInvoice(null);
+            }
+        }
+
         return $this;
     }
 }

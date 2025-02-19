@@ -16,7 +16,7 @@ php bin/console doctrine:migrations:migrate
 ```
 a mettre dans un script pour le start du projet
 ```
-symfony console doctrine:fixtures:load --no-interaction
+php bin/console doctrine:fixtures:load --no-interaction
 ```
 
 Voir toutes les montres avec leur stock :
