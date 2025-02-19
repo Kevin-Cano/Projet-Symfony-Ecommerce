@@ -14,9 +14,9 @@
 }
 
 .navbar.visible {
-    background-color: var(--color-white);
+    background-color: rgba(255, 255, 255, 0.98);
     padding: 1rem 4rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -44,10 +44,39 @@
     font-weight: 500;
     font-size: 1.1rem;
     transition: color 0.3s ease;
+    position: relative;
+    padding: 0.2rem 0;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .navbar.visible .nav-links a {
     color: #333;
+}
+
+.navbar.visible .nav-links a::after {
+    background-color: #333;
+}
+
+.nav-links a:hover {
+    transform: translateY(-2px);
+}
+
+.nav-links a.active::after {
+    width: 100%;
 }
 
 .nav-icons {
