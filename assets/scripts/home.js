@@ -1,20 +1,30 @@
 // Navbar scroll effect
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.querySelector('.navbar');
-    let lastScrollTop = 0;
-
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Add/remove visible class based on scroll position
-        if (scrollTop > 50) {
+    
+    // Fonction pour vérifier la position de défilement et mettre à jour la navbar
+    function updateNavbar() {
+        if (window.scrollY > 50) {
             navbar.classList.add('visible');
         } else {
             navbar.classList.remove('visible');
         }
-        
-        lastScrollTop = scrollTop;
-    });
+    }
+
+    // Vérifier l'état initial
+    updateNavbar();
+
+    // Ajouter l'écouteur d'événement avec throttling
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                updateNavbar();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 });
 
 // Products slider

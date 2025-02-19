@@ -1,25 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/login.css') }}">
 {% endblock %}
 
-{% block title %}LuxWatch{% endblock %}
+{% block title %}Connexion - LuxWatch{% endblock %}
 
 {% block body %}
 <div class="wrapper">
-    <h1><b>Connexion</b></h1>
-    <form>
-        <label>Mail / Nom d'utilisateur</label>
-        <input type="text" placeholder="Entrez votre mail ou nom d'utilisateur">
+    <h1>Connexion</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="username">Mail / Nom d'utilisateur</label>
+            <input type="text" id="username" name="_username" required placeholder="Entrez votre mail ou nom d'utilisateur">
+        </div>
 
-        <label>Mot de passe</label>
-        <input type="text" placeholder="Entrez votre mot de passe">
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="_password" required placeholder="Entrez votre mot de passe">
+        </div>
 
-        <input type="checkbox" id="checkbox">
-        <label class="remember" for="checkbox">Se souvenir de moi</label>
+        <div class="remember-group">
+            <input type="checkbox" id="checkbox" name="_remember_me">
+            <label class="remember" for="checkbox">Se souvenir de moi</label>
+        </div>
 
-        <button type="button">Connexion</button>
+        <button type="submit">Connexion</button>
+
+        <div class="additional-links">
+            <a href="{{ path('app_register') }}">Pas encore de compte ? S'inscrire</a>
+        </div>
     </form>
 </div>
 {% endblock %}
