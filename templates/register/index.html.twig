@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/register.css') }}">
+{% endblock %}
+
+{% block title %}Hello RegisterController!{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <h1><b>Créer un compte</b></h1>
+    <form>
+        <div class="a">
+            <label>Prénom</label>
+            <input type="text" placeholder="Entrez votre prénom">
+        </div>
+        <div class="a">
+            <label>Nom</label>
+            <input type="text" placeholder="Entrez votre nom">
+        </div>
+        <div class="a">
+            <label>Email</label>
+            <input type="text" placeholder="Entrez votre email">
+        </div>
+        <div class="a">
+            <label>Nom d'utilisateur</label>
+            <input type="text" placeholder="Entrez votre nom d'utilisateur">
+        </div>
+
+        <label>Mot de passe</label>
+        <input type="text" placeholder="Entrez votre mot de passe">
+
+        <label>Confirmation mot de passe</label>
+        <input type="text" placeholder="Confirmer votre mot de passe">
+
+        <input type="checkbox" id="checkbox">
+        <label class="remember" for="checkbox">J'accepte les conditions d'utilisations</label>
+
+        <button type="button">S'inscrire</button>
+
+    </form>
+    <p>Déjà inscrit ? Cliquez <a href="/login">ici</a> !</p>
+
+</div>
+{% endblock %}

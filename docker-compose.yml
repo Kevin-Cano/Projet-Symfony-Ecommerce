@@ -13,4 +13,4 @@ services:
       - "8081:80"
     environment:
       PMA_HOST: db
-    env_file: ".env.local".
+    env_file: ".env.local"
