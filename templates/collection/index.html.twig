@@ -1,20 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CollectionController!{% endblock %}
+{% block title %}Collection - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/styles/collection.css') }}">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/src/Controller/CollectionController.php</code></li>
-        <li>Your template at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/templates/collection/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="collection-container">
+        <h1>Notre Collection</h1>
+        
+        <div class="watches-grid">
+            {% for watch in watches %}
+                <div class="watch-card">
+                    <img src="{{ watch.imageUrl }}" alt="{{ watch.name }}" class="watch-image">
+                    <div class="watch-info">
+                        <h2 class="watch-name">{{ watch.name }}</h2>
+                        <p class="watch-reference">Réf: {{ watch.reference }}</p>
+                        <p class="watch-price">{{ watch.price }}</p>
+                        <p class="stock-status {% if watch.stock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                            {% if watch.stock <= 0 %}
+                                Hors stock
+                            {% else %}
+                                En stock
+                            {% endif %}
+                        </p>
+                        <button class="details-button">Voir les détails</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
