@@ -10,7 +10,11 @@ composer install
 symfony server:start
 ```
 
-
+a mettre dans un script pour le start du projet
+```
+php bin/console doctrine:migrations:migrate
+```
+a mettre dans un script pour le start du projet
 ```
 symfony console doctrine:fixtures:load --no-interaction
 ```
