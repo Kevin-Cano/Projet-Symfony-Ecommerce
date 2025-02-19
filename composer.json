@@ -85,6 +85,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "start": [
+            "docker compose up -d",
+            "symfony server:start --no-tls --port=80"
         ]
     },
     "conflict": {
@@ -97,6 +101,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^4.0",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.2.*",
         "symfony/css-selector": "7.2.*",
