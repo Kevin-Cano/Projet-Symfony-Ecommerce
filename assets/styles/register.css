@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center;
+}
+
+.wrapper {
+    background-color: #F7F7F7;
+    width: 40%;
+    border: 1px solid black;
+    border-radius: 30px;
+}
+
+h1 {
+    text-align: center;
+    text-decoration: underline;
+    padding: 10px;
+}
+
+.a {
+    display: inline-block;
+    width: 300px;
+}
+
+p {
+    text-align: center;
+}
