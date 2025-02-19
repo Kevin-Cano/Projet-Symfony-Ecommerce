@@ -496,6 +496,51 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: #888;
         }
+
+        .carousel-item {
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 400px;
+            margin: 0 auto;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-img-top {
+            height: 400px;
+            object-fit: contain;
+            background-color: #f8f9fa;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #000;
+            border-radius: 50%;
+            padding: 10px;
+        }
     </style>
 {% endblock %}
 
@@ -597,6 +642,11 @@
             container.addEventListener('mouseleave', () => {
                 autoSlideInterval = setInterval(slideNext, 5000);
             });
+
+            var carousel = new bootstrap.Carousel(document.getElementById('watchCarousel'), {
+                interval: 3000,
+                wrap: true
+            });
         });
     </script>
 {% endblock %}
@@ -639,11 +689,11 @@
                 <i class="fas fa-chevron-left"></i>
             </button>
             <div class="products-container">
-                {% for i in 1..6 %}
+                {% for watch in watches %}
                     <div class="product-card">
-                        <img src="{{ asset('images/test.webp') }}" alt="Montre Royal Oak">
-                        <h3 class="product-title">Montre Royal Oak</h3>
-                        <p class="product-subtitle">Edition limitée</p>
+                        <img src="{{ watch.imageUrl }}" alt="{{ watch.name }}">
+                        <h3 class="product-title">{{ watch.name }}</h3>
+                        <p class="product-subtitle">Édition limitée</p>
                     </div>
                 {% endfor %}
             </div>
