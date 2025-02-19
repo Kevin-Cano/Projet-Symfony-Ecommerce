@@ -39,6 +39,7 @@ class WatchFixtures extends Fixture
             ["Tissot T-Touch", "T091.420.47.051.00", "1,000€", "Une montre tactile multifonction.", ["mouvement" => "Quartz", "materiau" => "Titane", "etancheite" => "100m"], "Caoutchouc noir", "https://example.com/ttouch.jpg", 15],
             ["Hamilton Khaki Field", "H70555533", "800€", "Une montre militaire robuste.", ["mouvement" => "Automatique", "materiau" => "Acier", "etancheite" => "100m"], "Cuir marron", "https://example.com/khakifield.jpg", 18],
             ["Rado True Thinline", "R27056702", "1,500€", "Une montre ultra-mince en céramique.", ["mouvement" => "Quartz", "materiau" => "Céramique", "etancheite" => "30m"], "Céramique intégrée", "https://example.com/thinline.jpg", 10]
+            
         ];
 
         foreach ($watches as $watchData) {
