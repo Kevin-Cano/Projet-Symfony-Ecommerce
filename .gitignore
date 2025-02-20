@@ -56,3 +56,4 @@
 .idea
 var/
 .env.local
+/public/

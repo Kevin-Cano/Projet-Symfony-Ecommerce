@@ -99,7 +99,7 @@ class Watch
         return $this->author;
     }
 
-    public function setAuthor(?User $author): static
+    public function setAuthor(?User $author): self
     {
         $this->author = $author;
 
