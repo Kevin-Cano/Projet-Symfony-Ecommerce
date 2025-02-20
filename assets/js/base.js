@@ -13,86 +13,51 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScroll = currentScroll;
     });
 
-    // Infinite slider
+    // Slider infini manuel
     const container = document.querySelector('.products-container');
     const prevBtn = document.querySelector('.slider-nav.prev');
     const nextBtn = document.querySelector('.slider-nav.next');
     const cards = document.querySelectorAll('.product-card');
 
-    // Clone first and last sets of cards
-    const firstCards = Array.from(cards).slice(0, 3);
-    const lastCards = Array.from(cards).slice(-3);
-
-    // Add clones to the container
-    lastCards.forEach(card => {
-        const clone = card.cloneNode(true);
-        clone.classList.add('clone');
-        container.insertBefore(clone, container.firstChild);
-    });
-
-    firstCards.forEach(card => {
-        const clone = card.cloneNode(true);
-        clone.classList.add('clone');
-        container.appendChild(clone);
-    });
-
-    let currentIndex = 1; // Start at 1 to account for cloned cards
-    let isTransitioning = false;
-
-    function updateSlider(smooth = true) {
-        const slideWidth = cards[0].offsetWidth + 32; // width + gap
-        container.style.transition = smooth ? 'transform 0.5s ease' : 'none';
-        container.style.transform = `translateX(-${currentIndex * slideWidth * 3}px)`;
-    }
-
-    function slideNext() {
-        if (isTransitioning) return;
-        isTransitioning = true;
-        currentIndex++;
-        updateSlider();
-    }
-
-    function slidePrev() {
-        if (isTransitioning) return;
-        isTransitioning = true;
-        currentIndex--;
-        updateSlider();
-    }
-
-    // Handle infinite scroll transitions
-    container.addEventListener('transitionend', () => {
-        isTransitioning = false;
-        const totalSets = cards.length / 3;
-
-        if (currentIndex >= totalSets + 1) {
-            currentIndex = 1;
-            updateSlider(false);
+    if (container && cards.length > 0) {
+        // Créer suffisamment de clones pour un défilement continu
+        const totalClones = 2;
+        for (let i = 0; i < totalClones; i++) {
+            cards.forEach(card => {
+                const clone = card.cloneNode(true);
+                clone.classList.add('clone');
+                container.appendChild(clone);
+            });
         }
 
-        if (currentIndex <= 0) {
-            currentIndex = totalSets;
-            updateSlider(false);
+        let currentPosition = 0;
+        let isTransitioning = false;
+
+        function updatePosition(smooth = true) {
+            const cardWidth = cards[0].offsetWidth + 32;
+            container.style.transition = smooth ? 'transform 0.3s ease' : 'none';
+            container.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
         }
-    });
 
-    // Initialize slider position
-    updateSlider(false);
+        function slide(direction) {
+            if (isTransitioning) return;
+            isTransitioning = true;
 
-    // Event listeners for navigation
-    prevBtn.addEventListener('click', slidePrev);
-    nextBtn.addEventListener('click', slideNext);
+            currentPosition += direction;
+            updatePosition(true);
 
-    // Auto slide every 5 seconds
-    let autoSlideInterval = setInterval(slideNext, 5000);
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 300);
+        }
 
-    // Pause auto slide on hover
-    container.addEventListener('mouseenter', () => {
-        clearInterval(autoSlideInterval);
-    });
+        // Event listeners
+        prevBtn.addEventListener('click', () => slide(-1));
+        nextBtn.addEventListener('click', () => slide(1));
 
-    container.addEventListener('mouseleave', () => {
-        autoSlideInterval = setInterval(slideNext, 5000);
-    });
+        // Position initiale
+        updatePosition(false);
+    }
 
     var carousel = new bootstrap.Carousel(document.getElementById('watchCarousel'), {
         interval: 3000,

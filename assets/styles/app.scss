@@ -94,6 +94,76 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
 }
 
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.25);
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  right: 100%;
+  color: white;
+  outline: none;
+  backdrop-filter: blur(5px);
+  margin-right: 10px;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.search-container:hover .search-input {
+  width: 250px;
+  padding: 0.7rem 2.5rem 0.7rem 1.2rem;
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.search-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar.visible .search-icon {
+  color: #333;
+}
+
+.navbar.visible .search-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.navbar.visible .search-input {
+  background-color: rgba(245, 245, 245, 0.95);
+  color: #333;
+}
+
+.navbar.visible .search-input::placeholder {
+  color: rgba(51, 51, 51, 0.6);
+}
+
 .nav-icons a {
   color: white;
   text-decoration: none;
@@ -158,6 +228,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: 2rem;
   transition: transform 0.5s ease;
   padding: 0 1rem;
+  align-items: center;
 }
 
 .product-card {
@@ -172,7 +243,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-card.clone {
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .product-card:hover {
@@ -203,6 +274,24 @@ h1, h2, h3, h4, h5, h6 {
   color: #666;
   font-style: italic;
   margin-bottom: 1rem;
+}
+
+.details-button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background-color: #2D3C4C;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.details-button:hover {
+  background-color: #3d4f63;
+  transform: translateY(-2px);
 }
 
 .slider-nav {
@@ -591,4 +680,14 @@ section:nth-child(even) {
   background-color: #000;
   border-radius: 50%;
   padding: 10px;
+}
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.product-link:hover {
+  color: inherit;
 }

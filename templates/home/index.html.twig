@@ -17,7 +17,10 @@
             <a href="#">Contact</a>
         </div>
         <div class="nav-icons">
-            <a href="#"><i class="fas fa-search"></i></a>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Rechercher...">
+                <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
+            </div>
             {% if app.user %}
                 <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
                 <a href="#" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
@@ -51,9 +54,12 @@
             <div class="products-container">
                 {% for watch in watches %}
                     <div class="product-card">
-                        <img src="{{ watch.picture }}" alt="{{ watch.name }}">
-                        <h3 class="product-title">{{ watch.name }}</h3>
-                        <p class="product-subtitle">Édition limitée</p>
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="product-link">
+                            <img src="{{ watch.picture }}" alt="{{ watch.name }}">
+                            <h3 class="product-title">{{ watch.name }}</h3>
+                            <p class="product-subtitle">Édition limitée</p>
+                            <button class="details-button">Voir les détails</button>
+                        </a>
                     </div>
                 {% endfor %}
             </div>
