@@ -1,6 +1,11 @@
 
 {% block title %}Collection - LuxWatch{% endblock %}
 
+{% block stylesheets %}
+    
+    <link rel="stylesheet" href="{{ asset('styles/collection.css') }}">
+{% endblock %}
+
 {% block body %}
     <div class="collection-container">
         <h1>Notre Collection</h1>
@@ -20,8 +25,8 @@
                                 En stock
                             {% endif %}
                         </p>
-                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">Voir les détails</a>
                     </div>
+                    <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">Voir les détails</a>
                 </div>
             {% endfor %}
         </div>
