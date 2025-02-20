@@ -1,11 +1,5 @@
-{% extends 'base.html.twig' %}
 
 {% block title %}Collection - LuxWatch{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('assets/styles/collection.css') }}">
-{% endblock %}
 
 {% block body %}
     <div class="collection-container">
@@ -14,13 +8,13 @@
         <div class="watches-grid">
             {% for watch in watches %}
                 <div class="watch-card">
-                    <img src="{{ watch.imageUrl }}" alt="{{ watch.name }}" class="watch-image">
+                    <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
                     <div class="watch-info">
                         <h2 class="watch-name">{{ watch.name }}</h2>
                         <p class="watch-reference">Réf: {{ watch.reference }}</p>
-                        <p class="watch-price">{{ watch.price }}</p>
-                        <p class="stock-status {% if watch.stock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
-                            {% if watch.stock <= 0 %}
+                        <p class="watch-price">{{ watch.price }} €</p>
+                        <p class="stock-status {% if watch.stock.watchStock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                            {% if watch.stock.watchStock <= 0 %}
                                 Hors stock
                             {% else %}
                                 En stock

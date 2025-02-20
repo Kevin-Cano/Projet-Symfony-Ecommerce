@@ -15,16 +15,16 @@
 
         <div class="watch-details">
             <div class="watch-image-container">
-                <img src="{{ watch.imageUrl }}" alt="{{ watch.name }}" class="watch-image">
+                <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
             </div>
 
             <div class="watch-info">
                 <h1 class="watch-name">{{ watch.name }}</h1>
                 <p class="watch-reference">Référence: {{ watch.reference }}</p>
-                <p class="watch-price">{{ watch.price }}</p>
+                <p class="watch-price">{{ watch.price }} €</p>
                 
-                <div class="stock-status {% if watch.stock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
-                    {% if watch.stock <= 0 %}
+                <div class="stock-status {% if watch.stock.watchStock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                    {% if watch.stock.watchStock <= 0 %}
                         Hors stock
                     {% else %}
                         En stock

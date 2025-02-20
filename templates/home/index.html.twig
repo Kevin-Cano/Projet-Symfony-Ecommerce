@@ -12,15 +12,19 @@
         <a href="#" class="logo">LuxWatch</a>
         <div class="nav-links">
             <a href="#">Accueil</a>
-            <a href="#">Collection</a>
+            <a href="{{ path('app_collection') }}">Collection</a>
             <a href="#">Particuliers</a>
             <a href="#">Contact</a>
         </div>
         <div class="nav-icons">
             <a href="#"><i class="fas fa-search"></i></a>
-            <a href="#"><i class="fas fa-heart"></i></a>
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
-            <a href="#"><i class="fas fa-user"></i></a>
+            {% if app.user %}
+                <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
+                <a href="#" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
+                <a href="#" class="icon-link"><i class="fas fa-user"></i></a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="login-button">Se connecter</a>
+            {% endif %}
         </div>
     </nav>
 
@@ -34,7 +38,7 @@
         <div class="content">
             <h1>Découvrez notre collection de montres de luxe</h1>
             <p class="subtitle">L'élégance au poignet, la précision dans chaque détail</p>
-            <a href="#" class="cta-button">Voir la collection</a>
+            <a href="{{ path('app_collection') }}" class="cta-button">Voir la collection</a>
         </div>
     </section>
 
