@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\WatchRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: WatchRepository::class)]
 class Watch
@@ -12,45 +13,59 @@ class Watch
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['watch:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['watch:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['watch:read'])]
     private ?\DateTimeInterface $publicationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'watches')]
+    #[Groups(['watch:read'])]
     private ?User $author = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $state = null;
 
     #[ORM\Column]
+    #[Groups(['watch:read'])]
     private ?float $price = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['watch:read'])]
     private ?string $picture = null;
 
     #[ORM\OneToOne(mappedBy: 'watch', cascade: ['persist', 'remove'])]
+    #[Groups(['watch:read'])]
     private ?Stock $stock = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $reference = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $movement = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $material = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $waterResistance = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['watch:read'])]
     private ?string $bracelet = null;
 
     public function getId(): ?int
