@@ -26,7 +26,7 @@
                                 En stock
                             {% endif %}
                         </p>
-                        <button class="details-button">Voir les détails</button>
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">Voir les détails</a>
                     </div>
                 </div>
             {% endfor %}

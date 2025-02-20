@@ -2,6 +2,7 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     image: mysql:8.0
+    container_name: symfony_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-symfony}
@@ -11,6 +12,8 @@ services:
       - "3306:3306"
     volumes:
       - database_data:/var/lib/mysql:rw
+    networks:
+      - symfony_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
@@ -19,6 +22,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
+    container_name: symfony_phpmyadmin
     ports:
       - "8081:80"
     environment:
@@ -26,6 +30,12 @@ services:
       - PMA_HOST=database
     depends_on:
       - database
+    networks:
+      - symfony_network
+
+networks:
+  symfony_network:
+    driver: bridge
 
 volumes:
 ###> doctrine/doctrine-bundle ###

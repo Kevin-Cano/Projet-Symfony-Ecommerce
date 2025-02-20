@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ watch.name }} - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/styles/watch-details.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="details-container">
+        <a href="{{ path('app_collection') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Retour à la collection
+        </a>
+
+        <div class="watch-details">
+            <div class="watch-image-container">
+                <img src="{{ watch.imageUrl }}" alt="{{ watch.name }}" class="watch-image">
+            </div>
+
+            <div class="watch-info">
+                <h1 class="watch-name">{{ watch.name }}</h1>
+                <p class="watch-reference">Référence: {{ watch.reference }}</p>
+                <p class="watch-price">{{ watch.price }}</p>
+                
+                <div class="stock-status {% if watch.stock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                    {% if watch.stock <= 0 %}
+                        Hors stock
+                    {% else %}
+                        En stock
+                    {% endif %}
+                </div>
+
+                <div class="watch-description">
+                    <h2>Description</h2>
+                    <p>{{ watch.description }}</p>
+                </div>
+
+                <div class="watch-specs">
+                    <h2>Caractéristiques</h2>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Mouvement:</span>
+                            <span class="spec-value">{{ watch.movement }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Matériau:</span>
+                            <span class="spec-value">{{ watch.material }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Étanchéité:</span>
+                            <span class="spec-value">{{ watch.waterResistance }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Bracelet:</span>
+                            <span class="spec-value">{{ watch.bracelet }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

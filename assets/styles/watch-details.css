@@ -1,0 +1,142 @@
+.details-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    color: #2D3C4C;
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
+}
+
+.back-button i {
+    margin-right: 0.5rem;
+}
+
+.back-button:hover {
+    color: #3d4f63;
+}
+
+.watch-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.watch-image-container {
+    width: 100%;
+}
+
+.watch-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.watch-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.watch-name {
+    font-size: 2.5rem;
+    color: #2D3C4C;
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.watch-reference {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.watch-price {
+    font-size: 2rem;
+    color: #2D3C4C;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.stock-status {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+.in-stock {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.out-of-stock {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.watch-description {
+    margin-bottom: 2rem;
+}
+
+.watch-description h2 {
+    font-size: 1.5rem;
+    color: #2D3C4C;
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.watch-description p {
+    color: #444;
+    line-height: 1.6;
+}
+
+.watch-specs h2 {
+    font-size: 1.5rem;
+    color: #2D3C4C;
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.spec-value {
+    color: #2D3C4C;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .watch-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .specs-grid {
+        grid-template-columns: 1fr;
+    }
+} 
