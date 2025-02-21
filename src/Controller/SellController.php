@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Watch;
+use App\Entity\Stock;
 use App\Form\WatchType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +30,12 @@ class SellController extends AbstractController
         // Associer l'utilisateur connecté à la montre
         $watch->setAuthor($user);
         
+        // Créer et associer un nouveau Stock
+        $stock = new Stock();
+        $stock->setWatchStock(1); // Par défaut 1 montre en stock
+        $stock->setWatch($watch);
+        $watch->setStock($stock);
+        
         $form = $this->createForm(WatchType::class, $watch);
         $form->handleRequest($request);
 
@@ -51,6 +58,7 @@ class SellController extends AbstractController
             }
 
             $em->persist($watch);
+            $em->persist($stock);
             $em->flush();
 
             $this->addFlash('success', 'Votre montre a été mise en vente avec succès !');
