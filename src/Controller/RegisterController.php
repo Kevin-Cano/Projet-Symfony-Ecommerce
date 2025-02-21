@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class RegisterController extends AbstractController
 {
