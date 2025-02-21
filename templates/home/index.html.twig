@@ -13,8 +13,6 @@
 {% endblock %}
 
 {% block body %}
-    
-
     <section class="hero-section">
         <div class="video-background">
             <video autoplay muted loop playsinline>
@@ -32,24 +30,23 @@
     <section class="best-sellers">
         <h2 class="section-title">Les Plus Vendus</h2>
         <div id="watchCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                {% for watch in watches %}
-                    <button type="button" data-bs-target="#watchCarousel" data-bs-slide-to="{{ loop.index0 }}" 
-                        class="{{ loop.first ? 'active' : '' }}" aria-current="true">
-                    </button>
-                {% endfor %}
-            </div>
-            
             <div class="carousel-inner">
-                {% for watch in watches %}
+                {% for watches_chunk in watches|batch(3) %}
                     <div class="carousel-item {{ loop.first ? 'active' : '' }}">
-                        <img src="{{ watch.picture }}" alt="{{ watch.name }}">
-                        <div class="carousel-caption">
-                            <h5>{{ watch.name }}</h5>
-                            <p class="watch-price">{{ watch.price }} €</p>
-                            <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-details">
-                                Voir les détails
-                            </a>
+                        <div class="watches-grid">
+                            {% for watch in watches_chunk %}
+                                <div class="watch-card">
+                                    <img src="{{ watch.picture }}" alt="{{ watch.name }}">
+                                    <div class="watch-info">
+                                        <h5>{{ watch.name }}</h5>
+                                        <p class="watch-reference">Réf. {{ watch.reference }}</p>
+                                        <p class="watch-price">{{ watch.price|number_format(0, ',', ' ') }} €</p>
+                                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-details">
+                                            Voir les détails
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
@@ -57,11 +54,9 @@
 
             <button class="carousel-control-prev" type="button" data-bs-target="#watchCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#watchCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
             </button>
         </div>
     </section>
@@ -120,6 +115,4 @@
             </div>
         </div>
     </section>
-
-    
 {% endblock %}

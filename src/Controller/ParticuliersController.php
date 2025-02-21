@@ -7,14 +7,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CollectionController extends AbstractController
+class ParticuliersController extends AbstractController
 {
-    #[Route('/collection', name: 'app_collection')]
+    #[Route('/particuliers', name: 'app_particuliers')]
     public function index(WatchRepository $watchRepository): Response
     {
-        $watches = $watchRepository->findShopWatches();
+        // Récupérer les montres qui ont un auteur (montres des particuliers)
+        $watches = $watchRepository->findPrivateWatches();
 
-        return $this->render('collection/index.html.twig', [
+        return $this->render('particuliers/index.html.twig', [
             'watches' => $watches,
         ]);
     }

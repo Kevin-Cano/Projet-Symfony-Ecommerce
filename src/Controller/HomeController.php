@@ -15,6 +15,7 @@ class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig', [
             'watches' => $watchRepository->findSixMostExpensive(),
+            'otherWatches' => $watchRepository->findSixOtherWatches()
         ]);
     }
 }
