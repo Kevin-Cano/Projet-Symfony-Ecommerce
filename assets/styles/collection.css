@@ -12,6 +12,19 @@ h1 {
     font-family: 'Playfair Display', serif;
 }
 
+select {
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.div-select{
+    display: flex;
+    justify-content: center;
+    gap:20%;
+    margin-bottom: 50px;
+}
+
 .watches-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -40,11 +53,19 @@ h1 {
     padding: 1.5rem;
 }
 
+.watch-info img{
+    width: 30px;
+    height: auto;
+    float: right;
+    margin-top: 12px;
+}
+
 .watch-name {
     font-size: 1.25rem;
     color: #2D3C4C;
     margin-bottom: 0.5rem;
     font-family: 'Playfair Display', serif;
+    display: inline-block;
 }
 
 .watch-reference {
@@ -66,7 +87,8 @@ h1 {
     font-weight: 500;
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
-    margin-bottom: 1rem;
+    margin-top: 24px;
+    margin-bottom: 0px;
     float: right;
 }
 
@@ -91,7 +113,6 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s ease;
     justify-content: center;
-    
 }
 
 .details-button:hover {
