@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
 
 class RegisterController extends AbstractController
 {
@@ -21,7 +25,8 @@ class RegisterController extends AbstractController
         Request $request, 
         UserPasswordHasherInterface $userPasswordHasher, 
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        CsrfTokenManagerInterface $csrfTokenManager
     ): Response
     {
         if ($this->getUser()) {
@@ -32,22 +37,47 @@ class RegisterController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles(['ROLE_USER']);
-            $user->setBalance(0.0);
-            $user->setProfilePicture('/images/default-profile.png');
+        if ($form->isSubmitted()) {
+            $token = $request->request->get('_csrf_token');
+            if (!$csrfTokenManager->isTokenValid(new CsrfToken('authenticate', $token))) {
+                throw new InvalidCsrfTokenException('Invalid CSRF token.');
+            }
             
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            // Vérifier si l'email existe déjà
+            $existingEmail = $entityManager->getRepository(User::class)->findOneBy([
+                'email' => $form->get('email')->getData()
+            ]);
+            
+            // Vérifier si le nom d'utilisateur existe déjà
+            $existingUsername = $entityManager->getRepository(User::class)->findOneBy([
+                'userName' => $form->get('userName')->getData()
+            ]);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if ($existingEmail) {
+                $form->get('email')->addError(new FormError('Cette adresse email est déjà utilisée'));
+            }
 
-            return $security->login($user, LoginFormAuthenticator::class, 'main');
+            if ($existingUsername) {
+                $form->get('userName')->addError(new FormError('Ce nom d\'utilisateur est déjà pris'));
+            }
+
+            if ($form->isValid() && !$existingEmail && !$existingUsername) {
+                $user->setRoles(['ROLE_USER']);
+                $user->setBalance(0.0);
+                $user->setProfilePicture('/images/default-profile.png');
+                
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                return $security->login($user, LoginFormAuthenticator::class, 'main');
+            }
         }
 
         return $this->render('registration/register.html.twig', [

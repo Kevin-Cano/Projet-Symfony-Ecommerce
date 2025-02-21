@@ -7,6 +7,11 @@
     <script src="{{ asset('js/base.js') }}"></script>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% endblock %}
+
 {% block body %}
     <nav class="navbar">
         <a href="#" class="logo">LuxWatch</a>
@@ -47,24 +52,37 @@
 
     <section class="best-sellers">
         <h2 class="section-title">Les Plus Vendus</h2>
-        <div class="products-slider">
-            <button class="slider-nav prev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="products-container">
+        <div id="watchCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
                 {% for watch in watches %}
-                    <div class="product-card">
-                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="product-link">
-                            <img src="{{ watch.picture }}" alt="{{ watch.name }}">
-                            <h3 class="product-title">{{ watch.name }}</h3>
-                            <p class="product-subtitle">Édition limitée</p>
-                            <button class="details-button">Voir les détails</button>
-                        </a>
+                    <button type="button" data-bs-target="#watchCarousel" data-bs-slide-to="{{ loop.index0 }}" 
+                        class="{{ loop.first ? 'active' : '' }}" aria-current="true">
+                    </button>
+                {% endfor %}
+            </div>
+            
+            <div class="carousel-inner">
+                {% for watch in watches %}
+                    <div class="carousel-item {{ loop.first ? 'active' : '' }}">
+                        <img src="{{ watch.picture }}" alt="{{ watch.name }}">
+                        <div class="carousel-caption">
+                            <h5>{{ watch.name }}</h5>
+                            <p class="watch-price">{{ watch.price }} €</p>
+                            <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-details">
+                                Voir les détails
+                            </a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
-            <button class="slider-nav next">
-                <i class="fas fa-chevron-right"></i>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#watchCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#watchCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Next</span>
             </button>
         </div>
     </section>

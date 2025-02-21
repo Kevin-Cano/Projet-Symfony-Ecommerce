@@ -11,7 +11,9 @@
     <div class="register-container">
         <h1>Inscription</h1>
         
-        {{ form_start(registrationForm) }}
+        <form method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            {{ form_start(registrationForm) }}
             {# Afficher les erreurs globales du formulaire #}
             {{ form_errors(registrationForm) }}
             
@@ -60,7 +62,8 @@
             </div>
 
             <button type="submit" class="btn-register">S'inscrire</button>
-        {{ form_end(registrationForm) }}
+            {{ form_end(registrationForm) }}
+        </form>
 
         <div class="login-link">
             Déjà inscrit ? <a href="{{ path('app_login') }}">Connectez-vous</a>

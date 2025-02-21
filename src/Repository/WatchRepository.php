@@ -40,4 +40,22 @@ class WatchRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findSixMostExpensive(): array
+    {
+        return $this->createQueryBuilder('w')
+            ->orderBy('w.price', 'DESC')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSixOtherWatches(): array
+    {
+        return $this->createQueryBuilder('w')
+            ->orderBy('w.id', 'DESC')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
 }
