@@ -1,7 +1,7 @@
 /* Section des meilleures ventes */
 .best-sellers {
     padding: 4rem 0;
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
 }
 
 .section-title {
@@ -10,185 +10,149 @@
     color: #2D3C4C;
     font-size: 2rem;
     margin-bottom: 3rem;
-    font-weight: normal;
     padding-left: 2rem;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 1400px;
+    margin: 0 auto 3rem;
 }
 
-/* Style du carrousel */
+/* Carrousel */
 .carousel {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0;
+    padding: 0 3rem;
+    position: relative;
+}
+
+.watches-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+/* Cartes des montres */
+.watch-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.watch-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: contain;
+    padding: 1rem;
     background-color: white;
 }
 
-.carousel-inner {
-    border-radius: 0;
-    overflow: hidden;
-    box-shadow: none;
+.watch-info {
+    padding: 1.5rem;
+    text-align: center;
 }
 
-.carousel-item {
-    background: white;
-    height: 700px;
-    display: flex;
-    align-items: center;
-}
-
-.carousel-item img {
-    width: 50%;
-    height: 100%;
-    object-fit: contain;
-    background-color: #f8f9fa;
-    padding: 2rem;
-    transition: transform 0.3s ease;
-}
-
-.carousel-item:hover img {
-    transform: scale(1.05);
-}
-
-.carousel-caption {
-    position: static;
-    width: 50%;
-    background: none;
-    padding: 4rem;
-    text-align: left;
-    color: #2D3C4C;
-}
-
-.carousel-caption h5 {
+.watch-info h5 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
+    font-size: 1.2rem;
     color: #2D3C4C;
-    margin-bottom: 1.5rem;
-    text-shadow: none;
+    margin-bottom: 0.2rem;
+}
+
+.watch-reference {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
 }
 
 .watch-price {
+    font-size: 1.5rem;
     font-weight: 600;
     color: #2D3C4C;
-    font-size: 1.8rem;
-    margin: 1.5rem 0;
-    text-shadow: none;
+    margin: 1rem 0;
 }
 
 .btn-details {
-    display: inline-block;
-    padding: 1rem 3rem;
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
     background-color: #2D3C4C;
     color: white;
-    border: none;
-    font-size: 1rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
     text-decoration: none;
-    letter-spacing: 2px;
+    text-align: center;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
 
 .btn-details:hover {
     background-color: #1a2530;
-    color: white;
-    transform: translateY(-2px);
 }
 
-/* Contrôles du carrousel */
+/* Flèches du carrousel */
 .carousel-control-prev,
 .carousel-control-next {
-    width: 5%;
-    opacity: 1;
+    width: 45px;
+    height: 45px;
     background: none;
+    border: none;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+}
+
+.carousel-control-prev {
+    left: -2rem;
+}
+
+.carousel-control-next {
+    right: -2rem;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    width: 30px;
-    height: 30px;
-    background-color: #2D3C4C;
-    border-radius: 0;
-    background-size: 50%;
+    width: 35px;
+    height: 35px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.carousel-indicators {
-    bottom: 0;
-    margin-bottom: 0;
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M16 4l-8 8 8 8'/%3e%3c/svg%3e");
 }
 
-.carousel-indicators button {
-    width: 50px;
-    height: 3px;
-    background-color: #2D3C4C;
-    opacity: 0.3;
-    margin: 0;
-    border: none;
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M8 4l8 8-8 8'/%3e%3c/svg%3e");
 }
 
-.carousel-indicators button.active {
-    opacity: 1;
-    width: 50px;
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive */
 @media (max-width: 1200px) {
-    .carousel-item {
-        height: 600px;
-    }
-
-    .carousel-caption {
-        padding: 3rem;
-    }
-
-    .carousel-caption h5 {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 992px) {
-    .carousel-item {
-        height: auto;
-        flex-direction: column;
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 400px;
-    }
-
-    .carousel-caption {
-        width: 100%;
-        padding: 2rem;
+    .watches-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .carousel-item img {
-        height: 300px;
+    .watches-grid {
+        grid-template-columns: 1fr;
     }
 
-    .carousel-caption h5 {
-        font-size: 1.5rem;
+    .carousel {
+        padding: 0 1rem;
     }
 
-    .watch-price {
-        font-size: 1.3rem;
-    }
-
-    .btn-details {
-        padding: 0.75rem 2rem;
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .carousel-item {
-        height: 350px;
-    }
-
-    .carousel-caption h5 {
-        font-size: 1.2rem;
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none;
     }
 } 

@@ -1,8 +1,10 @@
+{% extends 'base.html.twig' %}
+
 
 {% block title %}Collection - LuxWatch{% endblock %}
 
 {% block stylesheets %}
-    
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/collection.css') }}">
 {% endblock %}
 
@@ -10,12 +12,29 @@
     <div class="collection-container">
         <h1>Notre Collection</h1>
         
+        <div class="div-select">
+            <select name="price" id="price">
+                <option>Prix</option>
+                <option value="less-1000">Moins de 1000</option>
+                <option value="between_1000_5000">Entre 1000 et 5000</option>
+                <option value="between_5000_10000">Entre 5000 et 10 000</option>
+                <option value="more_10 000">Plus de 10 000</option>
+            </select>
+
+            <select name="mark" id="mark">
+                <option>Marque</option>
+                <option value="rolex">Rolex</option>
+                <option value="patek">Patek</option>
+            </select>
+        </div>
+
         <div class="watches-grid">
             {% for watch in watches %}
                 <div class="watch-card">
                     <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
                     <div class="watch-info">
                         <h2 class="watch-name">{{ watch.name }}</h2>
+                        <img src="{{ asset('images/coeur.png') }}">
                         <p class="watch-reference">Réf: {{ watch.reference }}</p>
                         <p class="watch-price">{{ watch.price }} €</p>
                         <p class="stock-status {% if watch.stock.watchStock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">

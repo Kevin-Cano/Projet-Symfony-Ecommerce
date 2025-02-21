@@ -13,29 +13,6 @@
 {% endblock %}
 
 {% block body %}
-    <nav class="navbar">
-        <a href="#" class="logo">LuxWatch</a>
-        <div class="nav-links">
-            <a href="#">Accueil</a>
-            <a href="{{ path('app_collection') }}">Collection</a>
-            <a href="#">Particuliers</a>
-            <a href="#">Contact</a>
-        </div>
-        <div class="nav-icons">
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Rechercher...">
-                <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
-            </div>
-            {% if app.user %}
-                <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
-                <a href="#" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
-                <a href="#" class="icon-link"><i class="fas fa-user"></i></a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="login-button">Se connecter</a>
-            {% endif %}
-        </div>
-    </nav>
-
     <section class="hero-section">
         <div class="video-background">
             <video autoplay muted loop playsinline>
@@ -53,24 +30,23 @@
     <section class="best-sellers">
         <h2 class="section-title">Les Plus Vendus</h2>
         <div id="watchCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                {% for watch in watches %}
-                    <button type="button" data-bs-target="#watchCarousel" data-bs-slide-to="{{ loop.index0 }}" 
-                        class="{{ loop.first ? 'active' : '' }}" aria-current="true">
-                    </button>
-                {% endfor %}
-            </div>
-            
             <div class="carousel-inner">
-                {% for watch in watches %}
+                {% for watches_chunk in watches|batch(3) %}
                     <div class="carousel-item {{ loop.first ? 'active' : '' }}">
-                        <img src="{{ watch.picture }}" alt="{{ watch.name }}">
-                        <div class="carousel-caption">
-                            <h5>{{ watch.name }}</h5>
-                            <p class="watch-price">{{ watch.price }} €</p>
-                            <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-details">
-                                Voir les détails
-                            </a>
+                        <div class="watches-grid">
+                            {% for watch in watches_chunk %}
+                                <div class="watch-card">
+                                    <img src="{{ watch.picture }}" alt="{{ watch.name }}">
+                                    <div class="watch-info">
+                                        <h5>{{ watch.name }}</h5>
+                                        <p class="watch-reference">Réf. {{ watch.reference }}</p>
+                                        <p class="watch-price">{{ watch.price|number_format(0, ',', ' ') }} €</p>
+                                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-details">
+                                            Voir les détails
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
@@ -78,11 +54,9 @@
 
             <button class="carousel-control-prev" type="button" data-bs-target="#watchCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#watchCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
             </button>
         </div>
     </section>
@@ -141,22 +115,4 @@
             </div>
         </div>
     </section>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3 class="footer-title">À propos</h3>
-                <p class="footer-text">LuxWatch - Votre destination pour les montres de luxe</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3 class="footer-title">Contact</h3>
-                <a href="mailto:contact@luxwatch.com" class="footer-contact">Email: contact@luxwatch.com</a>
-                <a href="tel:+33123456789" class="footer-contact">Tél: +33 1 23 45 67 89</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2024 LuxWatch. Tous droits réservés.</p>
-        </div>
-    </footer>
 {% endblock %}
