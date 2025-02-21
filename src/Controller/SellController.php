@@ -11,13 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SellController extends AbstractController
 {
     #[Route('/sell', name: 'app_sell')]
     public function sell(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
+        // Vérifier si l'utilisateur est connecté
+        $user = $this->getUser();
+        if (!$user) {
+            // Rediriger vers la page de connexion si non connecté
+            return $this->redirectToRoute('app_login');
+        }
+
         $watch = new Watch();
+        // Associer l'utilisateur connecté à la montre
+        $watch->setAuthor($user);
+        
         $form = $this->createForm(WatchType::class, $watch);
         $form->handleRequest($request);
 
