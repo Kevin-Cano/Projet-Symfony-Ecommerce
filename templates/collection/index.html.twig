@@ -28,7 +28,7 @@
         </div>
 
         <div class="watches-grid">
-            {% for watch in watches %}
+            {% for watch in pagination %}
                 <div class="watch-card">
                     <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
                     <div class="watch-info">
@@ -47,6 +47,10 @@
                     <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">Voir les détails</a>
                 </div>
             {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {{ knp_pagination_render(pagination) }}
         </div>
     </div>
 {% endblock %}
