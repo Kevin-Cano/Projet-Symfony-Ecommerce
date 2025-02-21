@@ -24,7 +24,7 @@
         <nav class="navbar {% if app.request.attributes.get('_route') == 'app_home' %}navbar-transparent{% endif %}">
             <a href="#" class="logo">LuxWatch</a>
             <div class="nav-links">
-                <a href="#">Accueil</a>
+                <a href="{{ path('app_home') }}">Accueil</a>
                 <a href="{{ path('app_collection') }}">Collection</a>
                 <a href="#">Particuliers</a>
                 <a href="#">Contact</a>
