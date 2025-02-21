@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -32,12 +33,10 @@ class RegisterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Définir les valeurs par défaut
             $user->setRoles(['ROLE_USER']);
             $user->setBalance(0.0);
             $user->setProfilePicture('/images/default-profile.png');
             
-            // encode the plain password
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -48,12 +47,28 @@ class RegisterController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Connexion automatique après l'inscription
             return $security->login($user, LoginFormAuthenticator::class, 'main');
         }
 
-        return $this->render('register/index.html.twig', [
+        return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/check-duplicate', name: 'check_duplicate', methods: ['POST'])]
+    public function checkDuplicate(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $field = $request->request->get('field');
+        $value = $request->request->get('value');
+        
+        $repository = $entityManager->getRepository(User::class);
+        
+        $exists = match($field) {
+            'email' => $repository->findOneBy(['email' => $value]) !== null,
+            'userName' => $repository->findOneBy(['userName' => $value]) !== null,
+            default => false
+        };
+        
+        return new JsonResponse(['exists' => $exists]);
     }
 }
