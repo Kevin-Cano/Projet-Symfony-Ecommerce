@@ -7,6 +7,10 @@ use App\Repository\WatchRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
+use App\Form\WatchType;
 
 #[Route('/api', name: 'api_')]
 class WatchController extends AbstractController
@@ -23,5 +27,25 @@ class WatchController extends AbstractController
     public function show(Watch $watch): JsonResponse
     {
         return $this->json($watch, 200, [], ['groups' => 'watch:read']);
+    }
+
+    #[Route('/watches/new', name: 'watch_create', methods: ['POST'])]
+    public function createWatch(Request $request, EntityManagerInterface $entityManager, Security $security): JsonResponse
+    {
+        $watch = new Watch();
+        $form = $this->createForm(WatchType::class, $watch);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $security->getUser();
+            $watch->setAuthor($user);
+
+            $entityManager->persist($watch);
+            $entityManager->flush();
+
+            return $this->json($watch, 201, [], ['groups' => 'watch:read']);
+        }
+
+        return $this->json(['error' => 'Invalid data'], 400);
     }
 }

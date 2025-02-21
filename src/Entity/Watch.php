@@ -12,7 +12,7 @@ class Watch
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     #[Groups(['watch:read'])]
     private ?int $id = null;
 
@@ -24,11 +24,17 @@ class Watch
     #[Groups(['watch:read'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: 'datetime')]
     #[Groups(['watch:read'])]
     private ?\DateTimeInterface $publicationDate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'watches')]
+    public function __construct()
+    {
+        $this->publicationDate = new \DateTime();
+    }
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'watches')]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['watch:read'])]
     private ?User $author = null;
 
@@ -36,7 +42,7 @@ class Watch
     #[Groups(['watch:read'])]
     private ?string $state = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', scale: 2)]
     #[Groups(['watch:read'])]
     private ?float $price = null;
 
@@ -117,7 +123,6 @@ class Watch
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
-
         return $this;
     }
 
