@@ -29,7 +29,7 @@
     background: white;
     border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    
 }
 
 .watch-image-container {
@@ -47,11 +47,19 @@
     flex-direction: column;
 }
 
+.fav{
+    width: 30px;
+    height: auto;
+    float: right;
+    margin: 10px;
+}
+
 .watch-name {
     font-size: 2.5rem;
     color: #2D3C4C;
     margin-bottom: 1rem;
     font-family: 'Playfair Display', serif;
+    display: inline;
 }
 
 .watch-reference {
@@ -86,8 +94,49 @@
     color: #c62828;
 }
 
+.quantity {
+    padding: 5px;
+    width: 100px;
+    background-color: #D9D9D9;
+    text-align: center;
+}
+
+button {
+    float: right;
+    width: 400px;
+    height: 37px;
+    border-radius: 15px;
+    background-color: #2D3C4C;
+    color: white;
+    margin-bottom: 45px;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.info p{
+    font-weight: bold;
+    display: inline;
+}
+
+.info img{
+    display: block;
+    margin: auto;
+    width: 30px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.infos {
+    display: inline;
+}
+
 .watch-description {
     margin-bottom: 2rem;
+    
 }
 
 .watch-description h2 {

@@ -1,20 +1,49 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello AccountController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile">
+                <img src="{{ user.profilePicture ? asset('uploads/profile_pictures/' ~ user.profilePicture) : asset('images/default-profile.png') }}" alt="Profile Picture">
+                <h1>{{ user.username }}</h1>
+                <div class="buttons">
+                    <button data-section="personal-info">Informations personnelles</button>
+                    <button data-section="funds-info">Ajout de fond</button>
+                    <button data-section="security-info">Sécurité</button>
+                </div>
+            </div>
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/src/Controller/AccountController.php</code></li>
-        <li>Your template at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/templates/account/index.html.twig</code></li>
-    </ul>
-</div>
+        <div id="personal-info" class="info-section">
+            <h2>Informations personnelles</h2>
+            <div class="info-row">
+                <p>Nombre de montres mises en vente : {{ user.watches|length }}</p>
+                <p>Argent sur le compte : {{ user.balance }}</p>
+            </div>
+            <div class="info-row">
+                <p>Prénom : {{ user.firstName }}</p>
+                <p>Nom : {{ user.lastName }}</p>
+            </div>
+            <div class="info-row">
+                <p>Adresse de livraison : {{ user.deliveryAddress }}</p>
+                <p>Code postal : {{ user.postalCode }}</p>
+            </div>
+        </div>
+
+        <div id="funds-info" class="info-section">
+            <h2>Ajout de fond</h2>
+            <p>Argent sur le compte : {{ user.balance }}</p>
+            <button data-action="add-card">Ajouter une carte bancaire</button>
+            <button data-action="add-funds">Ajouter des fonds</button>
+        </div>
+
+        <div id="security-info" class="info-section">
+            <h2>Sécurité</h2>
+            <button data-action="update-phone">Ajouter/Modifier le numéro de téléphone</button>
+            <button data-action="update-password">Modifier le mot de passe</button>
+            <button data-action="delete-account">Supprimer le compte</button>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/profile.js') }}"></script>
 {% endblock %}

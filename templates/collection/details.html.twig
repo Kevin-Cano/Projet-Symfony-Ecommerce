@@ -3,8 +3,7 @@
 {% block title %}{{ watch.name }} - LuxWatch{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('assets/styles/watch-details.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/watch-details.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -19,7 +18,10 @@
             </div>
 
             <div class="watch-info">
-                <h1 class="watch-name">{{ watch.name }}</h1>
+                <div>
+                    <h1 class="watch-name">{{ watch.name }}</h1>
+                    <img src="{{ asset('images/coeur.png') }}" class="fav">
+                </div>
                 <p class="watch-reference">Référence: {{ watch.reference }}</p>
                 <p class="watch-price">{{ watch.price }} €</p>
                 
@@ -30,34 +32,54 @@
                         En stock
                     {% endif %}
                 </div>
-
-                <div class="watch-description">
-                    <h2>Description</h2>
-                    <p>{{ watch.description }}</p>
+                <div>
+                    <form>
+                        <input type="number" placeholder="Quantité" class="quantity" min="0" max="">
+                        <button>Ajouter au panier</button>
+                    </form>
                 </div>
-
-                <div class="watch-specs">
-                    <h2>Caractéristiques</h2>
-                    <div class="specs-grid">
-                        <div class="spec-item">
-                            <span class="spec-label">Mouvement:</span>
-                            <span class="spec-value">{{ watch.movement }}</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Matériau:</span>
-                            <span class="spec-value">{{ watch.material }}</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Étanchéité:</span>
-                            <span class="spec-value">{{ watch.waterResistance }}</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Bracelet:</span>
-                            <span class="spec-value">{{ watch.bracelet }}</span>
-                        </div>
+                <div class="info">
+                    <div class="infos">
+                        <img src="{{ asset('images/bouclier.png') }}">
+                        <p>Garantie 5 ans</p>
+                    </div>
+                    <div class="infos">
+                        <img src="{{ asset('images/camion.png') }}">
+                        <p>Livraison gratuite</p>
+                    </div>
+                    <div class="infos">
+                        <img src="{{ asset('images/retour.png') }}">
+                        <p>Retour sous 30 jours</p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="watch-description">
+            <h2>Description</h2>
+            <p>{{ watch.description }}</p>
+        </div>
+
+        <div class="watch-specs">
+            <h2>Caractéristiques</h2>
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Mouvement:</span>
+                    <span class="spec-value">{{ watch.movement }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Matériau:</span>
+                    <span class="spec-value">{{ watch.material }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Étanchéité:</span>
+                    <span class="spec-value">{{ watch.waterResistance }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Bracelet:</span>
+                    <span class="spec-value">{{ watch.bracelet }}</span>
+                </div>
+            </div>
+        </div>
     </div>
+    
 {% endblock %} 
