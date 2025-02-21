@@ -41,16 +41,20 @@ class SellController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pictureFile = $form->get('picture')->getData();
+            
             if ($pictureFile) {
                 $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$pictureFile->guessExtension();
 
                 try {
+                    // Déplacer le fichier dans le dossier public/uploads/watches
                     $pictureFile->move(
-                        $this->getParameter('watch_pictures_directory'),
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/watches',
                         $newFilename
                     );
+                    
+                    // Sauvegarder le nom du fichier dans la base de données
                     $watch->setPicture($newFilename);
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
@@ -62,7 +66,7 @@ class SellController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Votre montre a été mise en vente avec succès !');
-            return $this->redirectToRoute('app_sell');
+            return $this->redirectToRoute('app_particuliers');
         }
 
         return $this->render('sell/index.html.twig', [

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Montres des Particuliers{% endblock %}
+
+{% block body %}
+    <h1>Montres des Particuliers</h1>
+
+    <div class="watches-list">
+        {% for watch in watches %}
+            <div class="watch-item">
+                <h2>{{ watch.name }}</h2>
+                {% if watch.picture %}
+                    <img src="/uploads/watch_pictures/{{ watch.picture }}" alt="{{ watch.name }}">
+                {% else %}
+                    <img src="{{ asset('images/no-image.jpg') }}" alt="Image non disponible">
+                {% endif %}
+                <p>Prix: {{ watch.price }} €</p>
+                <p>État: {{ watch.state }}</p>
+                {% if watch.reference %}
+                    <p>Référence: {{ watch.reference }}</p>
+                {% endif %}
+                <p>Vendeur: {{ watch.author.userName }}</p>
+                <div class="actions">
+                    <a href="{{ path('app_watch_details', {'id': watch.id}) }}">Voir les détails</a>
+                    {% if app.user and app.user.id == watch.author.id %}
+                        <a href="{{ path('app_watch_edit', {'id': watch.id}) }}">Modifier</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <p>Aucune montre de particulier disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    {% if app.user %}
+        <div class="sell-section">
+            <a href="{{ path('app_sell') }}">Vendre ma montre</a>
+        </div>
+    {% else %}
+        <p>Connectez-vous pour vendre votre montre</p>
+    {% endif %}
+{% endblock %}

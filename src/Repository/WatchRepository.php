@@ -58,4 +58,26 @@ class WatchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Watch[] Returns an array of shop watches
+     */
+    public function findShopWatches(): array
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.author IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Watch[] Returns an array of private watches (with author)
+     */
+    public function findPrivateWatches(): array
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.author IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
