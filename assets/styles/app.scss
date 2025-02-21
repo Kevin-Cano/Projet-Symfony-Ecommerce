@@ -21,37 +21,27 @@ h1, h2, h3, h4, h5, h6 {
   --color-text: #333333;
 }
 
+/* Navbar par défaut (pour toutes les pages) */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1.5rem 4rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  transition: all 0.3s ease;
-  background-color: transparent;
-}
-
-.navbar.visible {
-  background-color: var(--color-white);
-  padding: 1rem 4rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  background-color: white;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
-  color: white;
+  color: #333;
   text-decoration: none;
   font-family: 'Playfair Display', serif;
   transition: color 0.3s ease;
-}
-
-.navbar.visible .logo {
-  color: #333;
 }
 
 .nav-links {
@@ -61,12 +51,80 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-links a {
-  color: white;
+  color: #333;
   text-decoration: none;
   font-weight: 500;
   font-size: 1.1rem;
   position: relative;
   padding: 5px 0;
+}
+
+.nav-icons a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.login-button {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  border: 2px solid #333;
+  padding: 0.4rem 1.2rem;
+  border-radius: 3px;
+}
+
+/* Style spécifique pour la page d'accueil */
+.navbar-transparent {
+  background-color: transparent;
+  transition: all 0.3s ease;
+
+  .logo {
+    color: white;
+  }
+
+  .nav-links a {
+    color: white;
+  }
+
+  .nav-icons a {
+    color: white;
+  }
+
+  .login-button {
+    color: white;
+    border-color: white;
+  }
+
+  .search-icon {
+    color: white;
+  }
+
+  &.visible {
+    background-color: white;
+    
+    .logo {
+      color: #333;
+    }
+
+    .nav-links a {
+      color: #333;
+    }
+
+    .nav-icons a {
+      color: #333;
+    }
+
+    .login-button {
+      color: #333;
+      border-color: #333;
+    }
+
+    .search-icon {
+      color: #333;
+    }
+  }
 }
 
 .nav-links a::after {
@@ -165,7 +223,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-icons a {
-  color: white;
+  color: #333;
   text-decoration: none;
   font-size: 1.2rem;
 }
@@ -187,11 +245,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .login-button {
-  color: white;
+  color: #333;
   text-decoration: none;
   font-weight: 500;
   font-size: 1.1rem;
-  border: 2px solid white;
+  border: 2px solid #333;
   padding: 0.4rem 1.2rem;
   border-radius: 3px;
 }
