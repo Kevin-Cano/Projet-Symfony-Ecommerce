@@ -22,7 +22,7 @@
     </head>
     <body>
         <nav class="navbar {% if app.request.attributes.get('_route') == 'app_home' %}navbar-transparent{% endif %}">
-            <a href="#" class="logo">LuxWatch</a>
+            <a href="{{ path('app_home') }}" class="logo">LuxWatch</a>
             <div class="nav-links">
                 <a href="{{ path('app_home') }}">Accueil</a>
                 <a href="{{ path('app_collection') }}">Collection</a>

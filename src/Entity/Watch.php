@@ -42,7 +42,7 @@ class Watch
     #[Groups(['watch:read'])]
     private ?string $state = null;
 
-    #[ORM\Column(type: 'decimal', scale: 2)]
+    #[ORM\Column]
     #[Groups(['watch:read'])]
     private ?float $price = null;
 
