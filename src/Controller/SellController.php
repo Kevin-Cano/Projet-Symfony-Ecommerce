@@ -50,7 +50,7 @@ class SellController extends AbstractController
                 try {
                     // Déplacer le fichier dans le dossier public/uploads/watches
                     $pictureFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/uploads/watches',
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/watch_pictures',
                         $newFilename
                     );
                     

@@ -26,6 +26,7 @@ echo Base de donnees reinitialisee avec succes!
 
 echo Lancement du serveur Symfony...
 start "Symfony Server" symfony server:start --no-tls --port=8000
+timeout /t 5
 
 echo Ouverture du navigateur...
 start http://localhost:8000
