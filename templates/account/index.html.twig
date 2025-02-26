@@ -5,7 +5,15 @@
         <div class="sidebar">
             <div class="profile">
                 <img src="{{ user.profilePicture ?? asset('images/default-profile.png') }}" alt="Profile Picture">
-                <h1>{{ user.username }}</h1>
+                <div class="username-container">
+                    <h1 id="username-display" class="editable-username">{{ user.username }}</h1>
+                    <input type="text" 
+                           id="username-input" 
+                           class="username-edit" 
+                           value="{{ user.username }}" 
+                           maxlength="30" 
+                           style="display: none;">
+                </div>
                 <div class="buttons">
                     <button data-section="personal-info">Informations personnelles</button>
                     <button data-section="funds-info">Ajout de fond</button>
@@ -20,20 +28,76 @@
                 <p>Nombre de montres mises en vente : {{ user.watches|length }}</p>
                 <p>Argent sur le compte : {{ user.balance }}</p>
             </div>
-            <div class="info-row">
-                <p>Prénom : {{ user.firstName }}</p>
-                <p>Nom : {{ user.lastName }}</p>
-            </div>
-            <div class="info-row">
-                <p>Adresse de livraison : {{ user.deliveryAddress }}</p>
-                <p>Code postal : {{ user.postalCode }}</p>
-            </div>
+            
+            <form id="personal-info-form" class="edit-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Prénom</label>
+                        <input type="text" id="firstName" name="firstName" value="{{ user.firstName }}" required>
+                        <button type="button" class="edit-btn" data-field="firstName">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Nom</label>
+                        <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required>
+                        <button type="button" class="edit-btn" data-field="lastName">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryAddress">Adresse</label>
+                        <input type="text" id="deliveryAddress" name="deliveryAddress" value="{{ user.deliveryAddress }}" required>
+                        <button type="button" class="edit-btn" data-field="deliveryAddress">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postalCode">Code postal</label>
+                        <input type="text" id="postalCode" name="postalCode" value="{{ user.postalCode }}" required>
+                        <button type="button" class="edit-btn" data-field="postalCode">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+                </div>
+
+                <div id="personal-info-message" class="message-container"></div>
+            </form>
         </div>
 
         <div id="funds-info" class="info-section">
-            <h2>Ajout de fond</h2>
-            <p>Argent sur le compte : {{ user.balance }}</p>
-            <button data-action="add-funds">Ajouter des fonds</button>
+            <h2>Ajout de fonds</h2>
+            <div class="balance-display">
+                <p>Solde actuel : <span class="current-balance">{{ user.balance|number_format(2, ',', ' ') }} €</span></p>
+            </div>
+            
+            <div class="add-funds-form">
+                <div class="amount-buttons">
+                    <button class="amount-btn" data-amount="50">50 €</button>
+                    <button class="amount-btn" data-amount="100">100 €</button>
+                    <button class="amount-btn" data-amount="200">200 €</button>
+                    <button class="amount-btn" data-amount="500">500 €</button>
+                </div>
+                
+                <div class="custom-amount">
+                    <input type="number" 
+                           id="custom-amount" 
+                           min="1" 
+                           max="10000" 
+                           step="1" 
+                           placeholder="Montant personnalisé">
+                    <span class="currency">€</span>
+                </div>
+                
+                <button id="add-funds-btn" class="primary-button">Ajouter les fonds</button>
+            </div>
+
+            <div id="funds-message" class="message-container"></div>
         </div>
 
         <div id="security-info" class="info-section">
@@ -45,4 +109,12 @@
     </div>
 
     <script src="{{ asset('js/profile.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/account.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/account.js') }}"></script>
 {% endblock %}
