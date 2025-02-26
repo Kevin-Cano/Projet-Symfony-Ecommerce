@@ -1,10 +1,10 @@
 .collection-container {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 6rem auto 4rem;
+    padding: 0 2rem;
 }
 
-h1 {
+.collection-container h1 {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 3rem;
@@ -12,7 +12,7 @@ h1 {
     font-family: 'Playfair Display', serif;
 }
 
-select {
+.collection-container select {
     width: 150px;
     padding: 10px;
     font-weight: bold;
@@ -31,36 +31,38 @@ select {
     gap: 2rem;
 }
 
-.watch-card {
+.collection-container .watch-card {
     background: white;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     transition: transform 0.3s ease;
 }
 
-.watch-card:hover {
+.collection-container .watch-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-.watch-image {
+.collection-container .watch-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 1rem;
 }
 
-.watch-info {
-    padding: 1.5rem;
+.collection-container .watch-info {
+    padding: 0 1.5rem 1.5rem;
 }
 
-.watch-info img{
+.collection-container .watch-info img{
     width: 30px;
     height: auto;
     float: right;
     margin-top: 12px;
 }
 
-.watch-name {
+.collection-container .watch-name {
     font-size: 1.25rem;
     color: #2D3C4C;
     margin-bottom: 0.5rem;
@@ -68,13 +70,13 @@ select {
     display: inline-block;
 }
 
-.watch-reference {
+.collection-container .watch-reference {
     color: #666;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
 
-.watch-price {
+.collection-container .watch-price {
     font-size: 1.5rem;
     color: #2D3C4C;
     font-weight: bold;
@@ -82,39 +84,40 @@ select {
     display: inline-block;
 }
 
-.stock-status {
+.collection-container .stock-status {
     font-size: 0.9rem;
     font-weight: 500;
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
-    margin-top: 24px;
-    margin-bottom: 0px;
-    float: right;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    display: inline-block;
 }
 
-.in-stock {
+.collection-container .in-stock {
     background-color: #e8f5e9;
     color: #2e7d32;
 }
 
-.out-of-stock {
+.collection-container .out-of-stock {
     background-color: #ffebee;
     color: #c62828;
 }
 
-.details-button {
-    display: flex;
+.collection-container .details-button {
+    display: block;
     width: 100%;
     padding: 0.8rem;
     background-color: #2D3C4C;
     color: white;
     text-decoration: none;
     border: none;
+    border-radius: 0 0 15px 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    justify-content: center;
+    text-align: center;
 }
 
-.details-button:hover {
+.collection-container .details-button:hover {
     background-color: #3d4f63;
 } 

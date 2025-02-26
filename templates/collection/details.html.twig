@@ -3,6 +3,7 @@
 {% block title %}{{ watch.name }} - LuxWatch{% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/watch-details.css') }}">
 {% endblock %}
 
