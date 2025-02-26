@@ -64,7 +64,6 @@ class RegisterController extends AbstractController
             if ($form->isValid() && !$existingEmail && !$existingUsername) {
                 $user->setRoles(['ROLE_USER']);
                 $user->setBalance(0.0);
-                $user->setProfilePicture('/images/default-profile.png');
                 
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(

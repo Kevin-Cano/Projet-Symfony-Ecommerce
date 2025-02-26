@@ -4,7 +4,7 @@
     <div class="container">
         <div class="sidebar">
             <div class="profile">
-                <img src="{{ user.profilePicture ? asset('uploads/profile_pictures/' ~ user.profilePicture) : asset('images/default-profile.png') }}" alt="Profile Picture">
+                <img src="{{ user.profilePicture ?? asset('images/default-profile.png') }}" alt="Profile Picture">
                 <h1>{{ user.username }}</h1>
                 <div class="buttons">
                     <button data-section="personal-info">Informations personnelles</button>
@@ -33,7 +33,6 @@
         <div id="funds-info" class="info-section">
             <h2>Ajout de fond</h2>
             <p>Argent sur le compte : {{ user.balance }}</p>
-            <button data-action="add-card">Ajouter une carte bancaire</button>
             <button data-action="add-funds">Ajouter des fonds</button>
         </div>
 

@@ -105,14 +105,6 @@
     border-radius: 50%;
 }
 
-.carousel-control-prev {
-    left: -2rem;
-}
-
-.carousel-control-next {
-    right: -2rem;
-}
-
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     width: 35px;
