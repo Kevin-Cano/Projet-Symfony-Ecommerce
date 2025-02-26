@@ -58,15 +58,17 @@
                                 {% endif %}
                             </div>
                         </td>
-                        <td class="actions">
-                            <a href="{{ path('admin_watch_edit', {'id': watch.id}) }}" class="btn btn-role">
-                                Modifier
-                            </a>
-                            <a href="{{ path('admin_watch_delete', {'id': watch.id}) }}" 
-                               class="btn btn-delete"
-                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette montre ?')">
-                                Supprimer
-                            </a>
+                        <td>
+                            <div class="actions">
+                                <a href="{{ path('admin_watch_edit', {'id': watch.id}) }}" class="btn btn-role">
+                                    Modifier
+                                </a>
+                                <a href="{{ path('admin_watch_delete', {'id': watch.id}) }}" 
+                                   class="btn btn-delete"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette montre ?')">
+                                    Supprimer
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}

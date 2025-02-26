@@ -2,11 +2,13 @@
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1rem;
+    overflow-x: auto;
 }
 
 .watches-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .watches-table th,
@@ -14,6 +16,39 @@
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.watches-table th:nth-child(1),
+.watches-table td:nth-child(1) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(2),
+.watches-table td:nth-child(2) {
+    width: 25%;
+}
+
+.watches-table th:nth-child(3),
+.watches-table td:nth-child(3) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(4),
+.watches-table td:nth-child(4) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(5),
+.watches-table td:nth-child(5) {
+    width: 10%;
+}
+
+.watches-table th:nth-child(6),
+.watches-table td:nth-child(6) {
+    width: 20%;
 }
 
 .watches-table th {
@@ -57,11 +92,21 @@
 }
 
 .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     text-decoration: none;
     color: white;
     white-space: nowrap;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.9;
 }
 
 .btn-role {
@@ -84,5 +129,5 @@
 .actions {
     display: flex;
     gap: 0.5rem;
-    justify-content: flex-end;
+    justify-content: flex-start;
 } 

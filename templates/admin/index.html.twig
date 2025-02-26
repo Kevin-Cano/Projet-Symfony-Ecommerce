@@ -70,21 +70,23 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td class="actions">
-                            {% if user.email != app.user.email and user.email != 'admin@luxwatch.com' %}
-                                <a href="{{ path('admin_toggle_role', {'id': user.id}) }}" class="btn btn-role">
-                                    {% if 'ROLE_ADMIN' in user.roles %}
-                                        <i class="fas fa-user-minus"></i> Retirer admin
-                                    {% else %}
-                                        <i class="fas fa-user-plus"></i> Rendre admin
-                                    {% endif %}
-                                </a>
-                                <a href="{{ path('admin_delete_user', {'id': user.id}) }}" 
-                                   class="btn btn-delete"
-                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </a>
-                            {% endif %}
+                        <td>
+                            <div class="actions">
+                                {% if user.email != app.user.email and user.email != 'admin@luxwatch.com' %}
+                                    <a href="{{ path('admin_toggle_role', {'id': user.id}) }}" class="btn btn-role">
+                                        {% if 'ROLE_ADMIN' in user.roles %}
+                                            <i class="fas fa-user-minus"></i> Retirer admin
+                                        {% else %}
+                                            <i class="fas fa-user-plus"></i> Rendre admin
+                                        {% endif %}
+                                    </a>
+                                    <a href="{{ path('admin_delete_user', {'id': user.id}) }}" 
+                                       class="btn btn-delete"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
