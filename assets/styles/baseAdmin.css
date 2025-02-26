@@ -1,0 +1,70 @@
+body {
+    background-color: #f8f9fa;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.admin-nav {
+    background-color: #2D3C4C;
+    padding: 0.5rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-nav .brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    margin-right: 2rem;
+}
+
+.admin-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background-color: rgba(255,255,255,0.15);
+}
+
+.admin-nav .logout {
+    background-color: #dc3545;
+}
+
+.admin-nav i {
+    font-size: 1.1rem;
+}
+
+main {
+    margin-top: 80px;
+    padding: 2rem;
+} 

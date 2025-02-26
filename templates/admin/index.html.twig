@@ -1,20 +1,94 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}Administration{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/admin.js') }}"></script>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ users|length }}</div>
+            <div class="stat-label">Utilisateurs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ users|filter(user => 'ROLE_ADMIN' in user.roles)|length }}</div>
+            <div class="stat-label">Administrateurs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ watches|length }}</div>
+            <div class="stat-label">Montres</div>
+        </div>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="content-card">
+        <h1>Gestion des utilisateurs</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/src/Controller/AdminController.php</code></li>
-        <li>Your template at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/templates/admin/index.html.twig</code></li>
-    </ul>
-</div>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Nom d'utilisateur</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.userName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.email == app.user.email %}
+                                <span class="badge badge-admin">Vous</span>
+                            {% elseif user.email == 'admin@luxwatch.com' %}
+                                <span class="badge badge-admin">Admin Principal</span>
+                            {% else %}
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <span class="badge badge-admin">Administrateur</span>
+                                {% else %}
+                                    <span class="badge badge-user">Utilisateur</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            {% if user.email != app.user.email and user.email != 'admin@luxwatch.com' %}
+                                <a href="{{ path('admin_toggle_role', {'id': user.id}) }}" class="btn btn-role">
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        <i class="fas fa-user-minus"></i> Retirer admin
+                                    {% else %}
+                                        <i class="fas fa-user-plus"></i> Rendre admin
+                                    {% endif %}
+                                </a>
+                                <a href="{{ path('admin_delete_user', {'id': user.id}) }}" 
+                                   class="btn btn-delete"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

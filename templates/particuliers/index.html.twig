@@ -10,7 +10,7 @@
             <div class="watch-item">
                 <h2>{{ watch.name }}</h2>
                 {% if watch.picture %}
-                    <img src="/uploads/watch_pictures/{{ watch.picture }}" alt="{{ watch.name }}">
+                    <img src="{{ asset('uploads/watch_pictures/' ~ watch.picture) }}" alt="{{ watch.name }}">
                 {% else %}
                     <img src="{{ asset('images/no-image.jpg') }}" alt="Image non disponible">
                 {% endif %}

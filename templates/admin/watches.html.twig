@@ -1,0 +1,120 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Montres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/watchesAdmin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="watches-container">
+        <h1>Gestion des Montres</h1>
+
+        <table class="watches-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Type</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for watch in watches %}
+                    <tr>
+                        <td>
+                            {% if watch.picture %}
+                                {% if watch.author %}
+                                    <img src="{{ asset('uploads/watch_pictures/' ~ watch.picture) }}" alt="{{ watch.name }}">
+                                {% else %}
+                                    <img src="{{ watch.picture }}" alt="{{ watch.name }}">
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{{ watch.name }}</td>
+                        <td>{{ watch.price|number_format(0, ',', ' ') }} €</td>
+                        <td>
+                            {% if watch.author %}
+                                <span class="badge-private">Particulier</span>
+                            {% else %}
+                                <span class="badge-shop">Boutique</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="stock-control">
+                                {% if not watch.author %}
+                                    <input type="number" 
+                                           class="stock-input" 
+                                           value="{{ watch.stock.watchStock }}"
+                                           data-watch-id="{{ watch.id }}"
+                                           data-original-value="{{ watch.stock.watchStock }}"
+                                           min="0">
+                                    <button class="btn-save-stock" style="display: none;">✓</button>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="actions">
+                            <a href="{{ path('admin_watch_edit', {'id': watch.id}) }}" class="btn btn-role">
+                                Modifier
+                            </a>
+                            <a href="{{ path('admin_watch_delete', {'id': watch.id}) }}" 
+                               class="btn btn-delete"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette montre ?')">
+                                Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.stock-control').forEach(control => {
+            const input = control.querySelector('.stock-input');
+            const saveButton = control.querySelector('.btn-save-stock');
+
+            // Afficher/masquer le bouton quand la valeur change
+            input.addEventListener('input', function() {
+                const originalValue = this.dataset.originalValue;
+                saveButton.style.display = this.value !== originalValue ? 'block' : 'none';
+            });
+
+            saveButton.addEventListener('click', function() {
+                const watchId = input.dataset.watchId;
+                fetch(`/admin/watch/stock/${watchId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `stock=${input.value}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mettre à jour la valeur originale
+                        input.dataset.originalValue = input.value;
+                        // Cacher le bouton
+                        saveButton.style.display = 'none';
+                        // Feedback visuel
+                        saveButton.style.backgroundColor = '#218838';
+                        setTimeout(() => {
+                            saveButton.style.backgroundColor = '#28a745';
+                        }, 500);
+                    }
+                })
+                .catch(error => {
+                    alert('Erreur lors de la mise à jour du stock');
+                });
+            });
+        });
+    </script>
+{% endblock %} 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Administration{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⌚</text></svg>">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/baseAdmin.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="admin-nav">
+            <div class="nav-left">
+                <a href="{{ path('app_admin') }}" class="brand">
+                    <i class="fas fa-cog"></i> Administration
+                </a>
+                <a href="{{ path('app_admin') }}" class="{% if app.request.get('_route') == 'app_admin' %}active{% endif %}">
+                    <i class="fas fa-users"></i> Utilisateurs
+                </a>
+                <a href="{{ path('admin_watches') }}" class="{% if app.request.get('_route') == 'admin_watches' %}active{% endif %}">
+                    <i class="fas fa-clock"></i> Montres
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="{{ path('app_home') }}" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Voir le site
+                </a>
+                <a href="{{ path('app_logout') }}" class="logout">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+</html> 
