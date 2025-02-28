@@ -1,20 +1,120 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello AccountController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile">
+                <img src="{{ user.profilePicture ?? asset('images/default-profile.png') }}" alt="Profile Picture">
+                <div class="username-container">
+                    <h1 id="username-display" class="editable-username">{{ user.username }}</h1>
+                    <input type="text" 
+                           id="username-input" 
+                           class="username-edit" 
+                           value="{{ user.username }}" 
+                           maxlength="30" 
+                           style="display: none;">
+                </div>
+                <div class="buttons">
+                    <button data-section="personal-info">Informations personnelles</button>
+                    <button data-section="funds-info">Ajout de fond</button>
+                    <button data-section="security-info">Sécurité</button>
+                </div>
+            </div>
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/src/Controller/AccountController.php</code></li>
-        <li>Your template at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/templates/account/index.html.twig</code></li>
-    </ul>
-</div>
+        <div id="personal-info" class="info-section">
+            <h2>Informations personnelles</h2>
+            <div class="info-row">
+                <p>Nombre de montres mises en vente : {{ user.watches|length }}</p>
+                <p>Argent sur le compte : {{ user.balance }}</p>
+            </div>
+            
+            <form id="personal-info-form" class="edit-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Prénom</label>
+                        <input type="text" id="firstName" name="firstName" value="{{ user.firstName }}" required>
+                        <button type="button" class="edit-btn" data-field="firstName">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Nom</label>
+                        <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required>
+                        <button type="button" class="edit-btn" data-field="lastName">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryAddress">Adresse</label>
+                        <input type="text" id="deliveryAddress" name="deliveryAddress" value="{{ user.deliveryAddress }}" required>
+                        <button type="button" class="edit-btn" data-field="deliveryAddress">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postalCode">Code postal</label>
+                        <input type="text" id="postalCode" name="postalCode" value="{{ user.postalCode }}" required>
+                        <button type="button" class="edit-btn" data-field="postalCode">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
+                        </button>
+                    </div>
+                </div>
+
+                <div id="personal-info-message" class="message-container"></div>
+            </form>
+        </div>
+
+        <div id="funds-info" class="info-section">
+            <h2>Ajout de fonds</h2>
+            <div class="balance-display">
+                <p>Solde actuel : <span class="current-balance">{{ user.balance|number_format(2, ',', ' ') }} €</span></p>
+            </div>
+            
+            <div class="add-funds-form">
+                <div class="amount-buttons">
+                    <button class="amount-btn" data-amount="50">50 €</button>
+                    <button class="amount-btn" data-amount="100">100 €</button>
+                    <button class="amount-btn" data-amount="200">200 €</button>
+                    <button class="amount-btn" data-amount="500">500 €</button>
+                </div>
+                
+                <div class="custom-amount">
+                    <input type="number" 
+                           id="custom-amount" 
+                           min="1" 
+                           max="10000" 
+                           step="1" 
+                           placeholder="Montant personnalisé">
+                    <span class="currency">€</span>
+                </div>
+                
+                <button id="add-funds-btn" class="primary-button">Ajouter les fonds</button>
+            </div>
+
+            <div id="funds-message" class="message-container"></div>
+        </div>
+
+        <div id="security-info" class="info-section">
+            <h2>Sécurité</h2>
+            <button data-action="update-phone">Ajouter/Modifier le numéro de téléphone</button>
+            <button data-action="update-password">Modifier le mot de passe</button>
+            <button data-action="delete-account">Supprimer le compte</button>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/profile.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/account.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/account.js') }}"></script>
 {% endblock %}

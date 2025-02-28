@@ -48,13 +48,11 @@ class SellController extends AbstractController
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$pictureFile->guessExtension();
 
                 try {
-                    // Déplacer le fichier dans le dossier public/uploads/watches
                     $pictureFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/uploads/watches',
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/watch_pictures',
                         $newFilename
                     );
                     
-                    // Sauvegarder le nom du fichier dans la base de données
                     $watch->setPicture($newFilename);
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');

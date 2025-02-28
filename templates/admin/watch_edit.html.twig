@@ -1,0 +1,122 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier la montre{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/watchEditAdmin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="edit-container">
+        <div class="edit-header">
+            <h1>Modifier la montre</h1>
+            <a href="{{ path('admin_watches') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form, {'attr': {'class': 'edit-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.name, 'Nom de la montre') }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom de la montre'}}) }}
+                {{ form_errors(form.name, {'attr': {'class': 'form-error'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.price, 'Prix (€)') }}
+                {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le prix'}}) }}
+                {{ form_errors(form.price, {'attr': {'class': 'form-error'}}) }}
+            </div>
+
+            {% if form.state is defined %}
+                <div class="form-group">
+                    {{ form_label(form.state, 'État') }}
+                    {{ form_widget(form.state, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.state, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            {% if form.reference is defined %}
+                <div class="form-group">
+                    {{ form_label(form.reference, 'Référence') }}
+                    {{ form_widget(form.reference, {'attr': {'class': 'form-control', 'placeholder': 'Référence du modèle'}}) }}
+                    {{ form_errors(form.reference, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            {% if form.movement is defined %}
+                <div class="form-group">
+                    {{ form_label(form.movement, 'Mouvement') }}
+                    {{ form_widget(form.movement, {'attr': {'class': 'form-control', 'placeholder': 'Type de mouvement'}}) }}
+                    {{ form_errors(form.movement, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            {% if form.material is defined %}
+                <div class="form-group">
+                    {{ form_label(form.material, 'Matériau') }}
+                    {{ form_widget(form.material, {'attr': {'class': 'form-control', 'placeholder': 'Matériau du boîtier'}}) }}
+                    {{ form_errors(form.material, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            {% if form.waterResistance is defined %}
+                <div class="form-group">
+                    {{ form_label(form.waterResistance, 'Résistance à l\'eau') }}
+                    {{ form_widget(form.waterResistance, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 100m, 10 ATM'}}) }}
+                    {{ form_errors(form.waterResistance, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            {% if form.bracelet is defined %}
+                <div class="form-group">
+                    {{ form_label(form.bracelet, 'Bracelet') }}
+                    {{ form_widget(form.bracelet, {'attr': {'class': 'form-control', 'placeholder': 'Type de bracelet'}}) }}
+                    {{ form_errors(form.bracelet, {'attr': {'class': 'form-error'}}) }}
+                </div>
+            {% endif %}
+
+            <div class="form-group full-width">
+                {{ form_label(form.description, 'Description') }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez la montre en détail...'}}) }}
+                {{ form_errors(form.description, {'attr': {'class': 'form-error'}}) }}
+            </div>
+
+            {% if watch.picture %}
+                <div class="preview-container">
+                    <label>Image actuelle</label>
+                    {% if watch.author %}
+                        {# Image pour les montres de particuliers #}
+                        <img src="{{ asset('uploads/watch_pictures/' ~ watch.picture) }}" alt="{{ watch.name }}" class="preview-image">
+                    {% else %}
+                        {# Image pour les montres de la boutique depuis l'API #}
+                        <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="preview-image">
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="form-group full-width">
+                {{ form_label(form.picture, 'Nouvelle image') }}
+                {{ form_widget(form.picture, {'attr': {'class': 'form-control'}}) }}
+                <small class="form-help">Formats acceptés: JPG, PNG. Taille maximale: 2MB</small>
+                {{ form_errors(form.picture, {'attr': {'class': 'form-error'}}) }}
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('admin_watches') }}" class="btn-submit btn-cancel">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Enregistrer les modifications
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %} 

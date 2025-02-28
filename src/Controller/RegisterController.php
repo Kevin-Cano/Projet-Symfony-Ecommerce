@@ -64,7 +64,6 @@ class RegisterController extends AbstractController
             if ($form->isValid() && !$existingEmail && !$existingUsername) {
                 $user->setRoles(['ROLE_USER']);
                 $user->setBalance(0.0);
-                $user->setProfilePicture('/images/default-profile.png');
                 
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
@@ -80,7 +79,7 @@ class RegisterController extends AbstractController
             }
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('register/index.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }

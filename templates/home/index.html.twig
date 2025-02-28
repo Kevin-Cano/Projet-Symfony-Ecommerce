@@ -64,35 +64,31 @@
     <section class="particuliers">
         <h2 class="particuliers-title">Espace Particuliers</h2>
         <p class="particuliers-subtitle">Achetez et vendez vos montres de luxe entre passionnés</p>
-        <a href="#" class="sell-button">Vendre ma montre</a>
+        {% if app.user %}
+            <a href="{{ path('app_sell') }}" class="sell-button">Vendre ma montre</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="sell-button">Se connecter pour vendre</a>
+        {% endif %}
         
         <div class="watches-grid">
-            <div class="watch-card">
-                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
-                <h3 class="watch-title">Rolex Datejust 41</h3>
-                <p class="watch-state">État: Excellent</p>
-                <p class="watch-price">Prix: 8,500 €</p>
-                <p class="watch-seller">John Doe</p>
-                <a href="#" class="contact-button">Contacter le vendeur</a>
-            </div>
-            
-            <div class="watch-card">
-                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
-                <h3 class="watch-title">Rolex Datejust 41</h3>
-                <p class="watch-state">État: Excellent</p>
-                <p class="watch-price">Prix: 8,500 €</p>
-                <p class="watch-seller">John Doe</p>
-                <a href="#" class="contact-button">Contacter le vendeur</a>
-            </div>
-            
-            <div class="watch-card">
-                <img src="{{ asset('images/test.webp') }}" alt="Rolex Datejust 41">
-                <h3 class="watch-title">Rolex Datejust 41</h3>
-                <p class="watch-state">État: Excellent</p>
-                <p class="watch-price">Prix: 8,500 €</p>
-                <p class="watch-seller">John Doe</p>
-                <a href="#" class="contact-button">Contacter le vendeur</a>
-            </div>
+            {% for watch in privateWatches %}
+                <div class="watch-card">
+                    {% if watch.picture %}
+                        <img src="{{ asset('uploads/watch_pictures/' ~ watch.picture) }}" alt="{{ watch.name }}">
+                    {% else %}
+                        <img src="{{ asset('images/no-image.jpg') }}" alt="Image non disponible">
+                    {% endif %}
+                    <h3 class="watch-title">{{ watch.name }}</h3>
+                    <p class="watch-state">État: {{ watch.state }}</p>
+                    <p class="watch-price">Prix: {{ watch.price|number_format(0, ',', ' ') }} €</p>
+                    <p class="watch-seller">{{ watch.author.userName }}</p>
+                    <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="contact-button">Voir les détails</a>
+                </div>
+            {% else %}
+                <div class="no-watches-message">
+                    <p>Aucune montre de particulier disponible pour le moment.</p>
+                </div>
+            {% endfor %}
         </div>
     </section>
 

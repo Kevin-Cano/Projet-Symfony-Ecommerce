@@ -71,12 +71,14 @@ class WatchRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Watch[] Returns an array of private watches (with author)
+     * @return Watch[] Returns a limited number of private watches
      */
-    public function findPrivateWatches(): array
+    public function findPrivateWatches(int $limit = 3): array
     {
         return $this->createQueryBuilder('w')
             ->andWhere('w.author IS NOT NULL')
+            ->setMaxResults($limit)
+            ->orderBy('w.publicationDate', 'DESC')
             ->getQuery()
             ->getResult();
     }

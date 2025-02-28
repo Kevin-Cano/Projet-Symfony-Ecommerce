@@ -1,0 +1,133 @@
+.watches-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    overflow-x: auto;
+}
+
+.watches-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.watches-table th,
+.watches-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.watches-table th:nth-child(1),
+.watches-table td:nth-child(1) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(2),
+.watches-table td:nth-child(2) {
+    width: 25%;
+}
+
+.watches-table th:nth-child(3),
+.watches-table td:nth-child(3) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(4),
+.watches-table td:nth-child(4) {
+    width: 15%;
+}
+
+.watches-table th:nth-child(5),
+.watches-table td:nth-child(5) {
+    width: 10%;
+}
+
+.watches-table th:nth-child(6),
+.watches-table td:nth-child(6) {
+    width: 20%;
+}
+
+.watches-table th {
+    background-color: #f5f5f5;
+}
+
+.watches-table img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.badge-shop, .badge-private {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.badge-shop {
+    background-color: #28a745;
+}
+
+.badge-private {
+    background-color: #17a2b8;
+}
+
+.stock-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stock-input {
+    width: 60px;
+    padding: 0.4rem;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-role {
+    background-color: #2D3C4C;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+}
+
+.btn-save-stock {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+} 

@@ -516,12 +516,10 @@ section:nth-child(even) {
 }
 
 .watches-grid {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  padding: 2rem;
 }
 
 .watch-card {
@@ -748,4 +746,33 @@ section:nth-child(even) {
 
 .product-link:hover {
   color: inherit;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  
+  .pagination span {
+    margin: 0 0.5rem;
+  }
+  
+  .pagination a {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    margin: 0 0.25rem;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: #f5f5f5;
+    }
+    
+    &.current {
+      background-color: #333;
+      color: white;
+      border-color: #333;
+    }
+  }
 }
