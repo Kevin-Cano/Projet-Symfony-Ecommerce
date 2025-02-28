@@ -36,7 +36,7 @@
                 </div>
                 {% if app.user %}
                     <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
-                    <a href="#" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
+                    <a href="{{ path('app_cart') }}" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
                     <a href="#" class="icon-link"><i class="fas fa-user"></i></a>
                 {% else %}
                     <a href="{{ path('app_login') }}" class="login-button">Se connecter</a>

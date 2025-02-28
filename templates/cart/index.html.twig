@@ -1,20 +1,49 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/cart.css') }}">
+{% endblock %}
+
 {% block title %}Hello CartController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="container">
+        <div class="article">
+            <img src="{{ asset('images/coeur.png') }}" class="photo">
+            <div class="nom">
+                <h2>Rolex</h2>
+                <p>réf : K72Q</p>
+            </div>
+            <div class="quantity">
+                <input type="number" min="1" value="1">
+            </div>
+            <div class="price">
+                <p>1 000 €</p>
+            </div>
+            <img src="{{ asset('images/poubelle.png') }}" class="bean">
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/src/Controller/CartController.php</code></li>
-        <li>Your template at <code>/home/slayz/Repo Git/Projet-Symfony-Ecommerce/templates/cart/index.html.twig</code></li>
-    </ul>
-</div>
+        <div class="recap">
+            <div class="info1">
+                <p>Nom :</p>
+                <p class="price">prix €</p>
+            </div>
+            <div class="info2">
+                <p>Livraison :</p>
+                <p class="price">prix €</p>
+            </div>
+            <hr>
+            <div class="total">
+                <p>Total :</p>
+                <p class="total-price">prix €</p>
+            </div>
+            <div class="button">
+                <button class="validation">Valider mon panier</button>
+            </div>
+            <div class="secure">
+                <p>Paiement 100% sécurisé</p>
+            </div>
+        </div>
+    <div>
 {% endblock %}
