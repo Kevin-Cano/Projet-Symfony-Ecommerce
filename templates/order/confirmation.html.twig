@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande confirmée - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .confirmation-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .confirmation-title {
+            font-size: 2rem;
+            color: #2D3C4C;
+            margin-bottom: 1rem;
+        }
+        
+        .confirmation-message {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+        
+        .order-details {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .order-details h2 {
+            font-size: 1.5rem;
+            color: #2D3C4C;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .btn-home {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #2D3C4C;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-home:hover {
+            background-color: #1a2530;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="confirmation-container">
+        <i class="fas fa-check-circle confirmation-icon"></i>
+        <h1 class="confirmation-title">Commande confirmée</h1>
+        <p class="confirmation-message">Merci pour votre commande! Votre commande a été traitée avec succès.</p>
+        
+        <div class="order-details">
+            <h2>Détails de la commande</h2>
+            
+            {% set total = 0 %}
+            {% for item in invoice.cart %}
+                <div class="order-item">
+                    <span>{{ item.watch.name }} x {{ item.quantity }}</span>
+                    <span>{{ (item.watch.price * item.quantity)|number_format(0, ',', ' ') }} €</span>
+                </div>
+                {% set total = total + (item.watch.price * item.quantity) %}
+            {% endfor %}
+            
+            <div class="order-item order-total">
+                <span>Total</span>
+                <span>{{ total|number_format(0, ',', ' ') }} €</span>
+            </div>
+        </div>
+        
+        <a href="{{ path('app_home') }}" class="btn-home">Retour à l'accueil</a>
+    </div>
+{% endblock %} 

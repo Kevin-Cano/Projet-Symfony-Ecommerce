@@ -33,9 +33,11 @@
                     {% endif %}
                 </div>
                 <div>
-                    <form>
-                        <input type="number" placeholder="Quantité" class="quantity" min="0" max="">
-                        <button>Ajouter au panier</button>
+                    <form action="{{ path('app_cart_add', {'id': watch.id}) }}" method="post">
+                        <input type="number" name="quantity" placeholder="Quantité" class="quantity" min="1" max="{{ watch.stock.watchStock }}" value="1">
+                        <button type="submit" {% if watch.stock.watchStock <= 0 %}disabled{% endif %}>
+                            Ajouter au panier
+                        </button>
                     </form>
                 </div>
                 <div class="info">
