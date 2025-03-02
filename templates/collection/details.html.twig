@@ -54,6 +54,9 @@
                         <p>Retour sous 30 jours</p>
                     </div>
                 </div>
+                {% if watch.author %}
+                    <p>Vendeur: {{ watch.author.userName }}</p>
+                {% endif %}
             </div>
         </div>
         <div class="watch-description">

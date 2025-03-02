@@ -211,7 +211,7 @@ final class CartController extends AbstractController
         
         // Créer une nouvelle facture
         $invoice = new Invoice();
-        $invoice->setUser($user);
+        $invoice->setUser($this->getUser());
         
         // Utiliser l'adresse de l'utilisateur si disponible
         if ($user->getDeliveryAddress() && $user->getPostalCode()) {

@@ -31,6 +31,9 @@ class Invoice
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     /**
      * @var Collection<int, CartItem>
      */
@@ -40,6 +43,7 @@ class Invoice
     public function __construct()
     {
         $this->cart = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -107,6 +111,18 @@ class Invoice
         return $this;
     }
 
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, CartItem>
      */
@@ -115,22 +131,22 @@ class Invoice
         return $this->cart;
     }
 
-    public function addCart(CartItem $cart): static
+    public function addCartItem(CartItem $cartItem): static
     {
-        if (!$this->cart->contains($cart)) {
-            $this->cart->add($cart);
-            $cart->setInvoice($this);
+        if (!$this->cart->contains($cartItem)) {
+            $this->cart->add($cartItem);
+            $cartItem->setInvoice($this);
         }
 
         return $this;
     }
 
-    public function removeCart(CartItem $cart): static
+    public function removeCartItem(CartItem $cartItem): static
     {
-        if ($this->cart->removeElement($cart)) {
+        if ($this->cart->removeElement($cartItem)) {
             // set the owning side to null (unless already changed)
-            if ($cart->getInvoice() === $this) {
-                $cart->setInvoice(null);
+            if ($cartItem->getInvoice() === $this) {
+                $cartItem->setInvoice(null);
             }
         }
 

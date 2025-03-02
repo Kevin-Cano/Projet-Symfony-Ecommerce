@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Watch>
      */
-    #[ORM\OneToMany(targetEntity: Watch::class, mappedBy: 'author')]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Watch::class, cascade: ['remove'])]
     private Collection $watches;
 
     /**
@@ -78,11 +78,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $postalCode = null;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, cascade: ['remove'])]
+    private Collection $reviews;
+
+    /**
+     * @var Collection<int, Favorite>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Favorite::class, cascade: ['remove'])]
+    private Collection $favorites;
+
     public function __construct()
     {
         $this->watches = new ArrayCollection();
         $this->cart = new ArrayCollection();
         $this->invoices = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -330,6 +344,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPostalCode(?string $postalCode): static
     {
         $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getUser() === $this) {
+                $favorite->setUser(null);
+            }
+        }
 
         return $this;
     }
