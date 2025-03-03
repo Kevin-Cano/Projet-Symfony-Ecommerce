@@ -25,53 +25,14 @@
     line-height: 1.6;
 }
 
-.sell-steps {
-    display: flex;
-    justify-content: space-between;
+.sell-steps-image {
+    text-align: center;
     margin-bottom: 3rem;
 }
 
-.step {
-    flex: 1;
-    text-align: center;
-    padding: 1.5rem;
-    position: relative;
-}
-
-.step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 2.5rem;
-    right: -1rem;
-    width: 2rem;
-    height: 2px;
-    background-color: #dee2e6;
-}
-
-.step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    background-color: #2D3C4C;
-    color: white;
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-.step-title {
-    font-size: 1.1rem;
-    color: #2D3C4C;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-.step-description {
-    font-size: 0.9rem;
-    color: #6c757d;
+.sell-steps-image img {
+    max-width: 100%;
+    height: auto;
 }
 
 .sell-form-container {
@@ -345,18 +306,6 @@
 }
 
 @media (max-width: 992px) {
-    .sell-steps {
-        flex-direction: column;
-    }
-    
-    .step {
-        margin-bottom: 1.5rem;
-    }
-    
-    .step:not(:last-child)::after {
-        display: none;
-    }
-    
     .benefits-grid {
         grid-template-columns: 1fr;
     }

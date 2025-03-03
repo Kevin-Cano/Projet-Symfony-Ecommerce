@@ -24,14 +24,10 @@
         <div class="account-sidebar">
             <div class="user-profile">
                 <div class="profile-image">
-                    <img src="{{ user.profilePicture ? asset('uploads/profile/' ~ user.profilePicture) : asset('images/default-profile.png') }}" alt="Photo de profil" id="profile-image-preview">
-                    <div class="profile-image-overlay">
-                        <label for="profile-image-upload" class="upload-icon">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="profile-image-upload" accept="image/*" style="display: none;">
-                    </div>
+                    <img src="{{ user.profilePicture ? asset('uploads/profile/' ~ user.profilePicture) : asset('images/default-profile.png') }}" 
+                         alt="Photo de profil">
                 </div>
+
                 <h2 class="username">{{ user.userName }}</h2>
             </div>
 
@@ -263,7 +259,7 @@
                                     <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-view">
                                         <i class="fas fa-eye"></i> Voir
                                     </a>
-                                    <a href="{{ path('app_particuliers') }}" class="btn-edit">
+                                    <a href="{{ path('app_watch_edit', {'id': watch.id}) }}" class="btn-edit">
                                         <i class="fas fa-pen"></i> Modifier
                                     </a>
                                 </div>
