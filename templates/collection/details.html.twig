@@ -25,7 +25,15 @@
             <div class="watch-info">
                 <div>
                     <h1 class="watch-name">{{ watch.name }}</h1>
-                    <img src="{{ asset('images/coeur.png') }}" class="fav">
+                    {% if app.user %}
+                        <button class="heart-button" data-id="{{ watch.id }}">
+                            <i class="far fa-heart heart-icon"></i>
+                        </button>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="heart-button">
+                            <i class="far fa-heart heart-icon"></i>
+                        </a>
+                    {% endif %}
                 </div>
                 <p class="watch-reference">Référence: {{ watch.reference }}</p>
                 <p class="watch-price">{{ watch.price }} €</p>
@@ -37,13 +45,21 @@
                         En stock
                     {% endif %}
                 </div>
-                <div>
-                    <form action="{{ path('app_cart_add', {'id': watch.id}) }}" method="post">
-                        <input type="number" name="quantity" placeholder="Quantité" class="quantity" min="1" max="{{ watch.stock.watchStock }}" value="1">
-                        <button type="submit" {% if watch.stock.watchStock <= 0 %}disabled{% endif %}>
-                            Ajouter au panier
-                        </button>
-                    </form>
+                <div class="watch-actions">
+                    {% if watch.stock.watchStock > 0 %}
+                        <form action="{{ path('app_cart_add', {'id': watch.id}) }}" method="post" class="cart-form">
+                            <div class="quantity-container">
+                                <label for="quantity">Quantité:</label>
+                                <input type="number" id="quantity" name="quantity" min="1" max="{{ watch.stock.watchStock }}" value="1" class="quantity-input">
+                            </div>
+                            <button type="submit" class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Ajouter au panier</span>
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="out-of-stock-btn" disabled>Hors stock</button>
+                    {% endif %}
                 </div>
                 <div class="info">
                     <div class="infos">
@@ -60,36 +76,70 @@
                     </div>
                 </div>
                 {% if watch.author %}
-                    <p>Vendeur: {{ watch.author.userName }}</p>
+                    <div class="seller-info">
+                        <span class="seller-label">Vendeur:</span>
+                        <span class="seller-name">{{ watch.author.userName }}</span>
+                    </div>
                 {% endif %}
             </div>
         </div>
-        <div class="watch-description">
-            <h2>Description</h2>
-            <p>{{ watch.description }}</p>
-        </div>
-
-        <div class="watch-specs">
-            <h2>Caractéristiques</h2>
-            <div class="specs-grid">
-                <div class="spec-item">
-                    <span class="spec-label">Mouvement:</span>
-                    <span class="spec-value">{{ watch.movement }}</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Matériau:</span>
-                    <span class="spec-value">{{ watch.material }}</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Étanchéité:</span>
-                    <span class="spec-value">{{ watch.waterResistance }}</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Bracelet:</span>
-                    <span class="spec-value">{{ watch.bracelet }}</span>
+        <div class="watch-tabs">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="description">Description</button>
+                <button class="tab-button" data-tab="specs">Caractéristiques</button>
+            </div>
+            
+            <div class="tab-content active" id="description-tab">
+                <p>{{ watch.description }}</p>
+            </div>
+            
+            <div class="tab-content" id="specs-tab">
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">Mouvement:</span>
+                        <span class="spec-value">{{ watch.movement }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Matériau:</span>
+                        <span class="spec-value">{{ watch.material }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Étanchéité:</span>
+                        <span class="spec-value">{{ watch.waterResistance }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Bracelet:</span>
+                        <span class="spec-value">{{ watch.bracelet }}</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/wishlist.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons et contenus
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.add('active');
+                    
+                    // Afficher le contenu correspondant
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                });
+            });
+        });
+    </script>
 {% endblock %} 
