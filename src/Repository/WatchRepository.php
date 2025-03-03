@@ -97,7 +97,7 @@ class WatchRepository extends ServiceEntityRepository
             ->orWhere('w.material LIKE :query')
             ->orWhere('w.bracelet LIKE :query')
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('w.createdAt', 'DESC');
+            ->orderBy('w.publicationDate', 'DESC');
         
         return $qb->getQuery()->getResult();
     }
