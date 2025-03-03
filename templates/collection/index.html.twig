@@ -31,10 +31,23 @@
         <div class="watches-grid">
             {% for watch in pagination %}
                 <div class="watch-card">
-                    <img src="{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
+                    <div class="watch-image-container">
+                        {% if app.user %}
+                            <button class="heart-button-small" data-id="{{ watch.id }}">
+                                <i class="far fa-heart heart-icon"></i>
+                            </button>
+                        {% endif %}
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}">
+                            <img 
+                                src="{{ watch.picture starts with 'http' or watch.picture starts with '/' ? watch.picture : asset('uploads/watch_pictures/' ~ watch.picture) }}" 
+                                alt="{{ watch.name }}" 
+                                class="watch-image"
+                                onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                            >
+                        </a>
+                    </div>
                     <div class="watch-info">
                         <h2 class="watch-name">{{ watch.name }}</h2>
-                        <img src="{{ asset('images/coeur.png') }}">
                         <p class="watch-reference">Réf: {{ watch.reference }}</p>
                         <p class="watch-price">{{ watch.price }} €</p>
                         <p class="stock-status {% if watch.stock.watchStock <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
@@ -54,4 +67,10 @@
             {{ knp_pagination_render(pagination) }}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/collection.js') }}"></script>
+    <script src="{{ asset('js/wishlist.js') }}"></script>
 {% endblock %}

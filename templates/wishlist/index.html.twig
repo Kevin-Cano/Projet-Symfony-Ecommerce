@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma liste de souhaits - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/wishlist.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="wishlist-container">
+        <h1>Ma liste de souhaits</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% if wishlistItems is empty %}
+            <div class="empty-wishlist">
+                <p>Votre liste de souhaits est vide</p>
+                <a href="{{ path('app_collection') }}" class="btn-continue">Découvrir notre collection</a>
+            </div>
+        {% else %}
+            <div class="wishlist-items">
+                {% for item in wishlistItems %}
+                    <div class="wishlist-item" data-id="{{ item.watch.id }}">
+                        <div class="wishlist-item-image">
+                            <a href="{{ path('app_watch_details', {'id': item.watch.id}) }}">
+                                <img 
+                                    src="{{ item.watch.picture starts with 'http' or item.watch.picture starts with '/' ? item.watch.picture : asset('uploads/watch_pictures/' ~ item.watch.picture) }}" 
+                                    alt="{{ item.watch.name }}" 
+                                    onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                                >
+                            </a>
+                            {% if item.watch.stock.watchStock <= 0 %}
+                                <div class="out-of-stock-badge">
+                                    <span>Hors stock</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="wishlist-item-info">
+                            <h3>{{ item.watch.name }}</h3>
+                            {% if item.watch.reference %}
+                                <p class="reference">Réf: {{ item.watch.reference }}</p>
+                            {% endif %}
+                            <p class="price">{{ item.watch.price|number_format(2, ',', ' ') }} €</p>
+                            {% if item.createdAt is defined %}
+                                <p class="added-date">Ajouté le {{ item.createdAt|date('d/m/Y') }}</p>
+                            {% endif %}
+                            <div class="wishlist-item-actions">
+                                <a href="{{ path('app_watch_details', {'id': item.watch.id}) }}" class="btn-details">Voir détails</a>
+                                {% if item.watch.stock.watchStock > 0 %}
+                                    <a href="{{ path('app_cart_add', {'id': item.watch.id}) }}" class="btn-add-to-cart">Ajouter au panier</a>
+                                {% endif %}
+                                <button class="btn-remove" data-id="{{ item.watch.id }}">Retirer</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des boutons de suppression
+            const removeButtons = document.querySelectorAll('.btn-remove');
+            
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const watchId = this.getAttribute('data-id');
+                    const itemElement = this.closest('.wishlist-item');
+                    
+                    fetch(`/wishlist/remove/${watchId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Animation de suppression
+                            itemElement.style.opacity = '0';
+                            setTimeout(() => {
+                                itemElement.style.height = '0';
+                                itemElement.style.margin = '0';
+                                itemElement.style.padding = '0';
+                                itemElement.style.overflow = 'hidden';
+                                
+                                setTimeout(() => {
+                                    itemElement.remove();
+                                    
+                                    // Vérifier s'il reste des éléments
+                                    const remainingItems = document.querySelectorAll('.wishlist-item');
+                                    if (remainingItems.length === 0) {
+                                        // Afficher le message "liste vide"
+                                        const wishlistItems = document.querySelector('.wishlist-items');
+                                        wishlistItems.innerHTML = `
+                                            <div class="empty-wishlist">
+                                                <p>Votre liste de souhaits est vide</p>
+                                                <a href="{{ path('app_collection') }}" class="btn-continue">Découvrir notre collection</a>
+                                            </div>
+                                        `;
+                                    }
+                                }, 300);
+                            }, 300);
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %} 

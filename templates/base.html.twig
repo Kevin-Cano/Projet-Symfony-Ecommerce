@@ -38,7 +38,7 @@
                         <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
                     </div>
                     {% if app.user %}
-                        <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
+                        <a href="{{ path('app_wishlist') }}" class="icon-link"><i class="fas fa-heart"></i></a>
                         <a href="{{ path('app_cart') }}" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
                         <a href="{{ path('app_account') }}" class="icon-link"><i class="fas fa-user"></i></a>
                     {% else %}
