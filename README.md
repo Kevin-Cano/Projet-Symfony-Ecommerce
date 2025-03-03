@@ -20,7 +20,9 @@
   
 N'oubliez pas de lire correctement les documentations afin de tout installer sans encombre.
 
-Pensez également a créer ces 2 fichiers, ``.env.dev`` dans lequel vous devrez y mettre ceci ``APP_SECRET=4d68cecbcc634ee27ca944ad8fb44877`` et ``.env.local`` dans lequel vous copierez le contenu du fichier ``.env.example`` en ajoutant les informations nécessaires. 
+Pensez également a créer ces 2 fichiers a la racine du projet : 
+- ``.env.dev`` dans lequel vous devrez y mettre ceci ``APP_SECRET=4d68cecbcc634ee27ca944ad8fb44877`` 
+- ``.env.local`` dans lequel vous copierez le contenu du fichier ``.env.example`` en ajoutant les informations nécessaires. 
 
 Maintenant que nos prérequis sont installé, il n'y a plus qu'a démarrer notre site !
 
