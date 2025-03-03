@@ -4,16 +4,24 @@ namespace App\Controller;
 
 use App\Entity\CartItem;
 use App\Entity\Watch;
+use App\Entity\Invoice;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\Invoice;
+use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
 
 final class CartController extends AbstractController
 {
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     #[Route('/cart', name: 'app_cart')]
     public function index(EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
@@ -22,7 +30,10 @@ final class CartController extends AbstractController
         
         // Si l'utilisateur est connecté, récupérer son panier depuis la base de données
         if ($this->getUser()) {
-            $cartItems = $entityManager->getRepository(CartItem::class)->findBy(['user' => $this->getUser(), 'invoice' => null]);
+            $cartItems = $entityManager->getRepository(CartItem::class)->findBy([
+                'user' => $this->getUser(), 
+                'invoice' => null
+            ]);
             
             // Calculer le total
             foreach ($cartItems as $item) {
@@ -76,17 +87,28 @@ final class CartController extends AbstractController
             
             if ($cartItem) {
                 // Mettre à jour la quantité
-                $cartItem->setQuantity($cartItem->getQuantity() + $quantity);
+                $newQuantity = $cartItem->getQuantity() + $quantity;
+                
+                // Vérifier si la nouvelle quantité est disponible
+                if ($watch->getStock()->getWatchStock() < $newQuantity) {
+                    $this->addFlash('error', 'La quantité totale demandée n\'est pas disponible.');
+                    return $this->redirectToRoute('app_watch_details', ['id' => $watch->getId()]);
+                }
+                
+                $cartItem->setQuantity($newQuantity);
             } else {
                 // Créer un nouvel élément de panier
                 $cartItem = new CartItem();
                 $cartItem->setUser($this->getUser());
                 $cartItem->setWatch($watch);
                 $cartItem->setQuantity($quantity);
+                
                 $entityManager->persist($cartItem);
             }
             
             $entityManager->flush();
+            
+            $this->addFlash('success', 'Article ajouté au panier avec succès.');
         } else {
             // Sinon, ajouter au panier en session
             $cart = $session->get('cart', []);
@@ -99,9 +121,10 @@ final class CartController extends AbstractController
             }
             
             $session->set('cart', $cart);
+            
+            $this->addFlash('success', 'Article ajouté au panier avec succès.');
         }
         
-        $this->addFlash('success', 'Article ajouté au panier avec succès.');
         return $this->redirectToRoute('app_cart');
     }
     
@@ -131,11 +154,11 @@ final class CartController extends AbstractController
             }
         }
         
-        $this->addFlash('success', 'Article retiré du panier.');
+        $this->addFlash('success', 'Article supprimé du panier.');
         return $this->redirectToRoute('app_cart');
     }
     
-    #[Route('/cart/update/{id}', name: 'app_cart_update', methods: ['POST'])]
+    #[Route('/cart/update/{id}', name: 'app_cart_update')]
     public function update(Watch $watch, Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $quantity = (int) $request->request->get('quantity', 1);
@@ -177,76 +200,187 @@ final class CartController extends AbstractController
         return $this->redirectToRoute('app_cart');
     }
 
-    #[Route('/cart/checkout', name: 'app_cart_checkout')]
-    public function checkout(EntityManagerInterface $entityManager, SessionInterface $session): Response
+    #[Route('/cart/checkout', name: 'app_cart_checkout', methods: ['POST'])]
+    public function checkout(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier si l'utilisateur est connecté
+        $this->logger->info('Début de la méthode checkout');
+        
+        // 1. Vérifier l'authentification
         if (!$this->getUser()) {
-            $this->addFlash('error', 'Vous devez être connecté pour finaliser votre commande.');
+            $this->logger->error('Utilisateur non connecté');
+            return $this->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour finaliser votre commande.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        
+        // 2. Récupérer et valider les données
+        $content = $request->getContent();
+        $this->logger->info('Contenu de la requête: ' . $content);
+        
+        try {
+            $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            $this->logger->info('Données décodées: ' . print_r($data, true));
+        } catch (\JsonException $e) {
+            $this->logger->error('Erreur de décodage JSON: ' . $e->getMessage());
+            return $this->json([
+                'success' => false,
+                'message' => 'Format de données invalide: ' . $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // 3. Valider les champs requis
+        $requiredFields = ['address', 'postalCode', 'city', 'phone'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $this->logger->error('Champ manquant: ' . $field);
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Le champ ' . $field . ' est requis.'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+        
+        // 4. Récupérer les articles du panier
+        $user = $this->getUser();
+        $cartItems = $entityManager->getRepository(CartItem::class)->findBy([
+            'user' => $user,
+            'invoice' => null
+        ]);
+        
+        if (empty($cartItems)) {
+            $this->logger->error('Panier vide');
+            return $this->json([
+                'success' => false,
+                'message' => 'Votre panier est vide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // 5. Calculer le total
+        $total = 0;
+        foreach ($cartItems as $item) {
+            $total += $item->getWatch()->getPrice() * $item->getQuantity();
+        }
+        $this->logger->info('Total calculé: ' . $total);
+        
+        // 6. Vérifier le solde
+        if ($user->getBalance() < $total) {
+            $this->logger->error('Solde insuffisant: ' . $user->getBalance() . ' < ' . $total);
+            return $this->json([
+                'success' => false,
+                'message' => 'Solde insuffisant pour effectuer cet achat.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // 7. Créer la facture et traiter la commande
+        try {
+            $entityManager->beginTransaction();
+            $this->logger->info('Début de la transaction');
+            
+            // Créer la facture
+            $invoice = new Invoice();
+            $invoice->setUser($user);
+            $invoice->setAmount($total);
+            $invoice->setStatus('Payée');
+            $invoice->setCreatedAt(new \DateTime());
+            $invoice->setAddress($data['address']);
+            $invoice->setPostalCode($data['postalCode']);
+            $invoice->setCity($data['city']);
+            $invoice->setPhone($data['phone']);
+            
+            $entityManager->persist($invoice);
+            $this->logger->info('Facture créée');
+            
+            // Traiter les articles
+            foreach ($cartItems as $item) {
+                // Vérifier le stock
+                $stock = $item->getWatch()->getStock();
+                $currentStock = $stock->getWatchStock();
+                $requestedQuantity = $item->getQuantity();
+                
+                if ($currentStock < $requestedQuantity) {
+                    throw new \Exception('Stock insuffisant pour ' . $item->getWatch()->getName() . 
+                        '. Stock disponible: ' . $currentStock . ', Quantité demandée: ' . $requestedQuantity);
+                }
+                
+                // Mettre à jour le stock
+                $stock->setWatchStock($currentStock - $requestedQuantity);
+                
+                // Associer l'article à la facture
+                $item->setInvoice($invoice);
+                
+                $this->logger->info('Article traité: ' . $item->getWatch()->getName() . 
+                    ', Quantité: ' . $requestedQuantity . 
+                    ', Nouveau stock: ' . ($currentStock - $requestedQuantity));
+            }
+            
+            // Mettre à jour le solde de l'utilisateur
+            $newBalance = $user->getBalance() - $total;
+            $user->setBalance($newBalance);
+            $this->logger->info('Solde mis à jour: ' . $user->getBalance() . ' -> ' . $newBalance);
+            
+            // Sauvegarder les changements
+            $entityManager->flush();
+            $entityManager->commit();
+            $this->logger->info('Transaction validée');
+            
+            return $this->json([
+                'success' => true,
+                'message' => 'Commande validée avec succès !',
+                'invoiceId' => $invoice->getId()
+            ]);
+            
+        } catch (\Exception $e) {
+            $entityManager->rollback();
+            $this->logger->error('Erreur lors de la validation: ' . $e->getMessage());
+            $this->logger->error('Trace: ' . $e->getTraceAsString());
+            
+            return $this->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route('/cart/delivery', name: 'app_cart_delivery')]
+    public function delivery(EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
         
-        $user = $this->getUser();
-        $cartItems = $entityManager->getRepository(CartItem::class)->findBy(['user' => $user, 'invoice' => null]);
+        $cartItems = $entityManager->getRepository(CartItem::class)->findBy([
+            'user' => $this->getUser(),
+            'invoice' => null
+        ]);
         
-        // Vérifier si le panier est vide
         if (empty($cartItems)) {
             $this->addFlash('error', 'Votre panier est vide.');
             return $this->redirectToRoute('app_cart');
         }
         
-        // Vérifier la disponibilité des stocks
-        $stockError = false;
+        $total = 0;
         foreach ($cartItems as $item) {
-            $watch = $item->getWatch();
-            if ($watch->getStock()->getWatchStock() < $item->getQuantity()) {
-                $this->addFlash('error', 'Le produit "' . $watch->getName() . '" n\'est plus disponible en quantité suffisante.');
-                $stockError = true;
-            }
+            $total += $item->getWatch()->getPrice() * $item->getQuantity();
         }
         
-        if ($stockError) {
+        // Vérifier si l'utilisateur a assez d'argent
+        if ($this->getUser()->getBalance() < $total) {
+            $this->addFlash('error', 'Solde insuffisant pour effectuer cet achat.');
             return $this->redirectToRoute('app_cart');
         }
         
-        // Créer une nouvelle facture
-        $invoice = new Invoice();
-        $invoice->setUser($this->getUser());
+        // Récupérer la dernière facture de l'utilisateur pour pré-remplir les champs
+        $lastInvoice = $entityManager->getRepository(Invoice::class)
+            ->findOneBy(
+                ['user' => $this->getUser()],
+                ['createdAt' => 'DESC']
+            );
         
-        // Utiliser l'adresse de l'utilisateur si disponible
-        if ($user->getDeliveryAddress() && $user->getPostalCode()) {
-            $invoice->setAddress($user->getDeliveryAddress());
-            $invoice->setPostalCode($user->getPostalCode());
-            $invoice->setCity('Ville'); // À améliorer
-        } else {
-            // Rediriger vers un formulaire de saisie d'adresse si nécessaire
-            return $this->redirectToRoute('app_validate');
-        }
-        
-        $entityManager->persist($invoice);
-        
-        // Mettre à jour les éléments du panier
-        $total = 0;
-        foreach ($cartItems as $item) {
-            $watch = $item->getWatch();
-            
-            // Mettre à jour le stock
-            $stock = $watch->getStock();
-            $stock->setWatchStock($stock->getWatchStock() - $item->getQuantity());
-            
-            // Associer l'élément à la facture
-            $item->setInvoice($invoice);
-            
-            // Calculer le total
-            $total += $watch->getPrice() * $item->getQuantity();
-        }
-        
-        $entityManager->flush();
-        
-        // Vider le panier en session
-        $session->remove('cart');
-        
-        $this->addFlash('success', 'Votre commande a été validée avec succès!');
-        return $this->redirectToRoute('app_order_confirmation', ['id' => $invoice->getId()]);
+        return $this->render('cart/delivery.html.twig', [
+            'cartItems' => $cartItems,
+            'total' => $total,
+            'lastInvoice' => $lastInvoice
+        ]);
     }
 }

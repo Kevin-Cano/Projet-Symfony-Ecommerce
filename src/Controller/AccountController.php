@@ -13,6 +13,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Entity\Watch;
+use App\Entity\Invoice;
+use App\Entity\InvoiceDetail;
+use App\Entity\CartItem;
+use App\Form\UserType;
 
 final class AccountController extends AbstractController
 {
@@ -42,75 +47,57 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         
-        // Charger l'utilisateur avec toutes ses relations
-        $user = $entityManager->getRepository(User::class)->find($this->getUser()->getId());
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
         
-        // Initialiser les collections pour éviter les erreurs
-        $watches = $user->getWatches()->toArray();
-        $invoices = $user->getInvoices()->toArray();
-        $favorites = $user->getFavorites()->toArray();
+        // Récupérer les factures de l'utilisateur
+        $invoices = $entityManager->getRepository(Invoice::class)->findBy(
+            ['user' => $this->getUser()],
+            ['createdAt' => 'DESC']
+        );
         
-        // Passer l'utilisateur connecté au template
+        // Passer l'utilisateur connecté et les factures au template
         return $this->render('account/index.html.twig', [
             'user' => $user,
-            'watches' => $watches,
-            'invoices' => $invoices,
-            'favorites' => $favorites,
+            'watches' => $user->getWatches()->toArray(),
+            'invoices' => $invoices
         ]);
     }
 
     #[Route('/account/add-funds', name: 'app_account_add_funds', methods: ['POST'])]
     public function addFunds(Request $request): Response
     {
-        $user = $this->security->getUser();
-        
-        if (!$user) {
-            throw new AccessDeniedException('Vous devez être connecté pour effectuer cette action.');
-        }
-
-        $amount = $request->request->get('amount');
-
-        // Validation du montant
-        $constraints = new Assert\Collection([
-            'amount' => [
-                new Assert\NotBlank(['message' => 'Le montant ne peut pas être vide.']),
-                new Assert\Type([
-                    'type' => 'numeric',
-                    'message' => 'Le montant doit être un nombre.'
-                ]),
-                new Assert\GreaterThan([
-                    'value' => 0,
-                    'message' => 'Le montant doit être supérieur à 0.'
-                ]),
-                new Assert\LessThanOrEqual([
-                    'value' => 10000,
-                    'message' => 'Le montant ne peut pas dépasser 10000.'
-                ])
-            ]
-        ]);
-
-        $violations = $this->validator->validate(['amount' => $amount], $constraints);
-
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $violation) {
-                $errors[] = $violation->getMessage();
-            }
+        // Vérifier si l'utilisateur est connecté
+        if (!$this->getUser()) {
             return $this->json([
                 'success' => false,
-                'errors' => $errors
+                'message' => 'Vous devez être connecté pour effectuer cette action.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Récupérer le montant
+        $amount = $request->request->get('amount');
+        
+        // Validation simple du montant
+        if (!$amount || !is_numeric($amount) || $amount <= 0) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Veuillez entrer un montant valide.'
             ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
+            $user = $this->getUser();
             $currentBalance = $user->getBalance() ?? 0;
-            $user->setBalance($currentBalance + floatval($amount));
+            $newBalance = $currentBalance + floatval($amount);
+            
+            $user->setBalance($newBalance);
             $this->entityManager->flush();
 
             return $this->json([
                 'success' => true,
                 'message' => 'Fonds ajoutés avec succès !',
-                'newBalance' => $user->getBalance()
+                'newBalance' => $newBalance
             ]);
         } catch (\Exception $e) {
             return $this->json([
@@ -258,25 +245,28 @@ final class AccountController extends AbstractController
     #[Route('/account/update-personal-info', name: 'app_account_update_personal_info', methods: ['POST'])]
     public function updatePersonalInfo(Request $request): Response
     {
-        $user = $this->security->getUser();
-        if (!$user) {
-            throw new AccessDeniedException('Vous devez être connecté pour effectuer cette action.');
+        // Vérifier si l'utilisateur est connecté
+        if (!$this->getUser()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour effectuer cette action.'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $field = $request->request->get('field');
         $value = $request->request->get('value');
-
-        // Validation des champs
-        $allowedFields = ['firstName', 'lastName', 'deliveryAddress', 'postalCode'];
-        if (!in_array($field, $allowedFields)) {
+        
+        if (!$field || !$value) {
             return $this->json([
                 'success' => false,
-                'message' => 'Champ non autorisé.'
+                'message' => 'Champ ou valeur manquant.'
             ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            // Mise à jour du champ
+            $user = $this->getUser();
+            
+            // Mettre à jour le champ approprié
             switch ($field) {
                 case 'firstName':
                     $user->setFirstName($value);
@@ -288,18 +278,18 @@ final class AccountController extends AbstractController
                     $user->setDeliveryAddress($value);
                     break;
                 case 'postalCode':
-                    if (!preg_match('/^\d{5}$/', $value)) {
-                        return $this->json([
-                            'success' => false,
-                            'message' => 'Code postal invalide.'
-                        ], Response::HTTP_BAD_REQUEST);
-                    }
                     $user->setPostalCode($value);
                     break;
+                default:
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Champ non reconnu.'
+                    ], Response::HTTP_BAD_REQUEST);
             }
-
+            
+            $this->entityManager->persist($user);
             $this->entityManager->flush();
-
+            
             return $this->json([
                 'success' => true,
                 'message' => 'Information mise à jour avec succès !'
@@ -315,15 +305,17 @@ final class AccountController extends AbstractController
     #[Route('/account/update-username', name: 'app_account_update_username', methods: ['POST'])]
     public function updateUsername(Request $request): Response
     {
-        $user = $this->security->getUser();
-        if (!$user) {
-            throw new AccessDeniedException('Vous devez être connecté pour effectuer cette action.');
+        // Vérifier si l'utilisateur est connecté
+        if (!$this->getUser()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour effectuer cette action.'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $newUsername = $request->request->get('userName');
-
-        // Validation basique
-        if (empty($newUsername)) {
+        
+        if (!$newUsername) {
             return $this->json([
                 'success' => false,
                 'message' => 'Le nom d\'utilisateur ne peut pas être vide.'
@@ -331,6 +323,8 @@ final class AccountController extends AbstractController
         }
 
         try {
+            $user = $this->getUser();
+            
             // Vérifier si le nom d'utilisateur existe déjà
             $existingUser = $this->entityManager->getRepository(User::class)
                 ->findOneBy(['userName' => $newUsername]);
@@ -343,6 +337,7 @@ final class AccountController extends AbstractController
             }
 
             $user->setUserName($newUsername);
+            $this->entityManager->persist($user);
             $this->entityManager->flush();
 
             return $this->json([
@@ -356,4 +351,82 @@ final class AccountController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    #[Route('/account/update-profile-image', name: 'app_account_update_profile_image', methods: ['POST'])]
+    public function updateProfileImage(Request $request): Response
+    {
+        // Vérifier si l'utilisateur est connecté
+        if (!$this->getUser()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour effectuer cette action.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $profileImage = $request->files->get('profileImage');
+        
+        if (!$profileImage) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Aucune image n\'a été envoyée.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Valider le type de fichier
+        $mimeType = $profileImage->getMimeType();
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        
+        if (!in_array($mimeType, $allowedTypes)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Le format de l\'image n\'est pas supporté. Utilisez JPG, PNG, GIF ou WEBP.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Valider la taille du fichier (max 2MB)
+        if ($profileImage->getSize() > 2 * 1024 * 1024) {
+            return $this->json([
+                'success' => false,
+                'message' => 'L\'image ne doit pas dépasser 2MB.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $user = $this->getUser();
+            
+            // Supprimer l'ancienne image si elle existe
+            $oldImage = $user->getProfilePicture();
+            if ($oldImage) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/profile/' . $oldImage;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            // Générer un nom de fichier unique
+            $newFilename = uniqid() . '.' . $profileImage->guessExtension();
+            
+            // Déplacer le fichier
+            $profileImage->move(
+                $this->getParameter('kernel.project_dir') . '/public/uploads/profile',
+                $newFilename
+            );
+            
+            // Mettre à jour l'utilisateur
+            $user->setProfilePicture($newFilename);
+            $this->entityManager->flush();
+            
+            return $this->json([
+                'success' => true,
+                'message' => 'Photo de profil mise à jour avec succès !',
+                'imagePath' => $newFilename
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue lors de la mise à jour de la photo de profil.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+    

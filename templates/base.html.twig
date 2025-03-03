@@ -21,31 +21,38 @@
         {% endblock %}
     </head>
     <body>
-        <nav class="navbar {% if app.request.attributes.get('_route') == 'app_home' %}navbar-transparent{% endif %}">
-            <a href="{{ path('app_home') }}" class="logo">LuxWatch</a>
-            <div class="nav-links">
-                <a href="{{ path('app_home') }}">Accueil</a>
-                <a href="{{ path('app_collection') }}">Collection</a>
-                <a href="{{ path('app_particuliers') }}">Particuliers</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="nav-icons">
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Rechercher...">
-                    <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
+        {% block header %}
+        <header>
+            <nav class="navbar {% if app.request.attributes.get('_route') == 'app_home' %}navbar-transparent{% endif %}">
+                <a href="{{ path('app_home') }}" class="logo">LuxWatch</a>
+                <div class="nav-links">
+                    <a href="{{ path('app_home') }}">Accueil</a>
+                    <a href="{{ path('app_collection') }}">Collection</a>
+                    <a href="{{ path('app_particuliers') }}">Particuliers</a>
+                    <a href="#">Contact</a>
                 </div>
-                {% if app.user %}
-                    <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
-                    <a href="{{ path('app_cart') }}" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
-                    <a href="#" class="icon-link"><i class="fas fa-user"></i></a>
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="login-button">Se connecter</a>
-                {% endif %}
-            </div>
-        </nav>
+                <div class="nav-icons">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Rechercher...">
+                        <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
+                    </div>
+                    {% if app.user %}
+                        <a href="#" class="icon-link"><i class="fas fa-heart"></i></a>
+                        <a href="{{ path('app_cart') }}" class="icon-link"><i class="fas fa-shopping-cart"></i></a>
+                        <a href="{{ path('app_account') }}" class="icon-link"><i class="fas fa-user"></i></a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="login-button">Se connecter</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+        {% endblock %}
 
-        {% block body %}{% endblock %}
+        <main>
+            {% block body %}{% endblock %}
+        </main>
 
+        {% block footer %}
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-section">
@@ -63,5 +70,6 @@
                 <p>© 2024 LuxWatch. Tous droits réservés.</p>
             </div>
         </footer>
+        {% endblock %}
     </body>
 </html>

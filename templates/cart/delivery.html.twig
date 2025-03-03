@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/cart.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/delivery.css') }}">
+{% endblock %}
+
+{% block title %}Informations de livraison - LuxWatch{% endblock %}
+
+{% block body %}
+    <div class="delivery-container">
+        <h1>Informations de livraison</h1>
+        
+        <div class="order-summary">
+            <h2>Récapitulatif de la commande</h2>
+            <div class="summary-items">
+                {% for item in cartItems %}
+                    <div class="summary-item">
+                        <div class="item-name">{{ item.watch.name }} x{{ item.quantity }}</div>
+                        <div class="item-price">{{ (item.watch.price * item.quantity)|number_format(2, ',', ' ') }} €</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="summary-total">
+                <div>Total</div>
+                <div>{{ total|number_format(2, ',', ' ') }} €</div>
+            </div>
+        </div>
+        
+        <div class="delivery-form-container">
+            <h2>Adresse de livraison</h2>
+            {% if lastInvoice is defined and lastInvoice %}
+                <div class="info-message">
+                    <p>Nous avons pré-rempli les champs avec vos informations précédentes. Vous pouvez les modifier si nécessaire.</p>
+                </div>
+            {% endif %}
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" id="address" name="address" required 
+                           value="{{ lastInvoice is defined and lastInvoice ? lastInvoice.address : '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="postalCode">Code postal</label>
+                    <input type="text" id="postalCode" name="postalCode" required 
+                           value="{{ lastInvoice is defined and lastInvoice ? lastInvoice.postalCode : '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="city">Ville</label>
+                    <input type="text" id="city" name="city" required 
+                           value="{{ lastInvoice is defined and lastInvoice ? lastInvoice.city : '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="tel" id="phone" name="phone" required 
+                           value="{{ lastInvoice is defined and lastInvoice ? lastInvoice.phone : '' }}">
+                </div>
+                <div class="form-actions">
+                    <a href="{{ path('app_cart') }}" class="btn-back">Retour au panier</a>
+                    <button type="submit" class="btn-confirm">Confirmer la commande</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutForm = document.getElementById('checkout-form');
+            
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(checkoutForm);
+                    const data = {
+                        address: formData.get('address'),
+                        postalCode: formData.get('postalCode'),
+                        city: formData.get('city'),
+                        phone: formData.get('phone')
+                    };
+                    
+                    console.log('Données envoyées:', data);
+                    
+                    fetch('{{ path('app_cart_checkout') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur réseau: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Réponse reçue:', data);
+                        if (data.success) {
+                            window.location.href = `/order/confirmation/${data.invoiceId}`;
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Une erreur est survenue lors de la validation de votre commande: ' + error.message);
+                    });
+                });
+            }
+        });
+    </script>
+{% endblock %} 
