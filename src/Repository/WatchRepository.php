@@ -71,6 +71,45 @@ class WatchRepository extends ServiceEntityRepository
     }
 
     /**
+     * Creates a query for shop watches
+     */
+    public function createShopWatchesQuery()
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.author IS NULL')
+            ->getQuery();
+    }
+
+    /**
+     * @return Watch[] Returns an array of shop watches filtered by price range
+     */
+    public function findShopWatchesByPriceRange(float $min, float $max): array
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.author IS NULL')
+            ->andWhere('w.price >= :min')
+            ->andWhere('w.price <= :max')
+            ->setParameter('min', $min)
+            ->setParameter('max', $max)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Creates a query for shop watches filtered by price range
+     */
+    public function createShopWatchesByPriceRangeQuery(float $min, float $max)
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.author IS NULL')
+            ->andWhere('w.price >= :min')
+            ->andWhere('w.price <= :max')
+            ->setParameter('min', $min)
+            ->setParameter('max', $max)
+            ->getQuery();
+    }
+
+    /**
      * @return Watch[] Returns a limited number of private watches
      */
     public function findPrivateWatches(int $limit = 3): array

@@ -12,25 +12,34 @@
     <div class="collection-container">
         <h1>Notre Collection</h1>
         
-        <div class="div-select">
-            <select name="price" id="price">
-                <option>Prix</option>
-                <option value="less-1000">Moins de 1000</option>
-                <option value="between_1000_5000">Entre 1000 et 5000</option>
-                <option value="between_5000_10000">Entre 5000 et 10 000</option>
-                <option value="more_10 000">Plus de 10 000</option>
-            </select>
-
-            <select name="mark" id="mark">
-                <option>Marque</option>
-                <option value="rolex">Rolex</option>
-                <option value="patek">Patek</option>
-            </select>
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="price-filter">Prix</label>
+                <select id="price-filter" class="form-control">
+                    <option value="all" {% if priceFilter == 'all' %}selected{% endif %}>Prix</option>
+                    <option value="less1000" {% if priceFilter == 'less1000' %}selected{% endif %}>Moins de 1000</option>
+                    <option value="1000to5000" {% if priceFilter == '1000to5000' %}selected{% endif %}>Entre 1000 et 5000</option>
+                    <option value="5000to10000" {% if priceFilter == '5000to10000' %}selected{% endif %}>Entre 5000 et 10 000</option>
+                    <option value="more10000" {% if priceFilter == 'more10000' %}selected{% endif %}>Plus de 10 000</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="material-filter">Matériau</label>
+                <select id="material-filter" class="form-control">
+                    <option value="all" {% if materialFilter == 'all' %}selected{% endif %}>Tous les matériaux</option>
+                    <option value="Acier" {% if materialFilter == 'Acier' %}selected{% endif %}>Acier</option>
+                    <option value="Or" {% if materialFilter == 'Or' %}selected{% endif %}>Or</option>
+                    <option value="Titane" {% if materialFilter == 'Titane' %}selected{% endif %}>Titane</option>
+                    <option value="Céramique" {% if materialFilter == 'Céramique' %}selected{% endif %}>Céramique</option>
+                    <option value="Carbone" {% if materialFilter == 'Carbone' %}selected{% endif %}>Carbone</option>
+                </select>
+            </div>
         </div>
 
-        <div class="watches-grid">
+        <div class="watches-grid" id="watches-container">
             {% for watch in pagination %}
-                <div class="watch-card">
+                <div class="watch-card" data-price="{{ watch.price }}">
                     <div class="watch-image-container">
                         {% if app.user %}
                             <button class="heart-button-small" data-id="{{ watch.id }}">
@@ -73,4 +82,31 @@
     {{ parent() }}
     <script src="{{ asset('js/collection.js') }}"></script>
     <script src="{{ asset('js/wishlist.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceFilter = document.getElementById('price-filter');
+            const materialFilter = document.getElementById('material-filter');
+            
+            priceFilter.addEventListener('change', function() {
+                applyFilters();
+            });
+            
+            materialFilter.addEventListener('change', function() {
+                applyFilters();
+            });
+            
+            function applyFilters() {
+                const selectedPrice = priceFilter.value;
+                const selectedMaterial = materialFilter.value;
+                
+                let url = '{{ path('app_collection') }}?price=' + selectedPrice;
+                
+                if (selectedMaterial !== 'all') {
+                    url += '&material=' + selectedMaterial;
+                }
+                
+                window.location.href = url;
+            }
+        });
+    </script>
 {% endblock %}
