@@ -52,8 +52,8 @@
 /.web-server-pid
 
 
-.env.*
+.env.dev
+.env.local
 .idea
 var/
-.env.local
 /public/
