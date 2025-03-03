@@ -5,45 +5,169 @@
     <link rel="stylesheet" href="{{ asset('styles/cart.css') }}">
 {% endblock %}
 
-{% block title %}Hello CartController!{% endblock %}
+{% block title %}Mon Panier - LuxWatch{% endblock %}
 
 {% block body %}
     <div class="container">
-        <div class="article">
-            <img src="{{ asset('images/coeur.png') }}" class="photo">
-            <div class="nom">
-                <h2>Rolex</h2>
-                <p>réf : K72Q</p>
+        <h1 class="cart-title">Mon Panier</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
             </div>
-            <div class="quantity">
-                <input type="number" min="1" value="1">
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
             </div>
-            <div class="price">
-                <p>1 000 €</p>
+        {% endfor %}
+        
+        {% if cartItems is empty %}
+            <div class="empty-cart">
+                <p>Votre panier est vide</p>
+                <a href="{{ path('app_collection') }}" class="btn-continue">Continuer mes achats</a>
             </div>
-            <img src="{{ asset('images/poubelle.png') }}" class="bean">
-        </div>
+        {% else %}
+            <div class="cart-items">
+                <h2>Articles ({{ cartItems|length }})</h2>
+                {% for item in cartItems %}
+                    <div class="article">
+                        {% if item.watch.picture %}
+                            <img src="{{ item.watch.picture }}" class="photo" alt="{{ item.watch.name }}">
+                        {% else %}
+                            <div class="photo-placeholder">
+                                <i class="fas fa-watch"></i>
+                            </div>
+                        {% endif %}
+                        <div class="nom">
+                            <h2>{{ item.watch.name }}</h2>
+                            <p>réf : {{ item.watch.reference }}</p>
+                            <p class="stock">En stock: {{ item.watch.stock.watchStock }}</p>
+                        </div>
+                        <div class="quantity">
+                            <label for="quantity-{{ item.watch.id }}">Qté:</label>
+                            <form action="{{ path('app_cart_update', {'id': item.watch.id}) }}" method="post" class="quantity-form">
+                                <input type="number" name="quantity" min="1" max="{{ item.watch.stock.watchStock }}" 
+                                       value="{{ item.quantity }}" class="quantity-input" id="quantity-{{ item.watch.id }}">
+                            </form>
+                        </div>
+                        <div class="price">
+                            <p>{{ (item.watch.price * item.quantity)|number_format(2, ',', ' ') }} €</p>
+                        </div>
+                        <a href="{{ path('app_cart_remove', {'id': item.watch.id}) }}" class="remove-item" title="Supprimer du panier">
+                            <img src="{{ asset('images/poubelle.png') }}" class="bean" alt="Supprimer">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
 
-        <div class="recap">
-            <div class="info1">
-                <p>Nom :</p>
-                <p class="price">prix €</p>
+            <div class="recap">
+                <h2>Récapitulatif</h2>
+                <div class="info1">
+                    <p>Sous-total :</p>
+                    <p class="price">{{ total|number_format(2, ',', ' ') }} €</p>
+                </div>
+                <div class="info2">
+                    <p>Livraison :</p>
+                    <p class="price">Gratuite</p>
+                </div>
+                <hr>
+                <div class="total">
+                    <p>Total :</p>
+                    <p class="total-price">{{ total|number_format(2, ',', ' ') }} €</p>
+                </div>
+
+                {% if app.user %}
+                    {% if app.user.balance >= total %}
+                        <div class="button">
+                            <a href="{{ path('app_cart_delivery') }}" class="validation-link">Valider mon panier</a>
+                        </div>
+                    {% else %}
+                        <div class="insufficient-funds">
+                            <p>Solde insuffisant pour valider le panier</p>
+                            <p>Votre solde : {{ app.user.balance|number_format(2, ',', ' ') }} €</p>
+                            <a href="{{ path('app_account') }}" class="btn-add-funds">Ajouter des fonds</a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="login-required">
+                        <p>Connectez-vous pour finaliser votre commande</p>
+                        <a href="{{ path('app_login') }}" class="btn-login">Se connecter</a>
+                    </div>
+                {% endif %}
+
+                <div class="secure">
+                    <i class="fas fa-lock"></i>
+                    <p>Paiement 100% sécurisé</p>
+                </div>
             </div>
-            <div class="info2">
-                <p>Livraison :</p>
-                <p class="price">prix €</p>
-            </div>
-            <hr>
-            <div class="total">
-                <p>Total :</p>
-                <p class="total-price">prix €</p>
-            </div>
-            <div class="button">
-                <button class="validation">Valider mon panier</button>
-            </div>
-            <div class="secure">
-                <p>Paiement 100% sécurisé</p>
-            </div>
-        </div>
-    <div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutForm = document.getElementById('checkout-form');
+            const showDeliveryFormBtn = document.getElementById('show-delivery-form');
+            const deliveryFormContainer = document.getElementById('delivery-form-container');
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+
+            // Mise à jour automatique des quantités
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    this.closest('form').submit();
+                });
+            });
+
+            // Afficher le formulaire de livraison quand on clique sur "Valider mon panier"
+            if (showDeliveryFormBtn) {
+                showDeliveryFormBtn.addEventListener('click', function() {
+                    showDeliveryFormBtn.style.display = 'none';
+                    deliveryFormContainer.style.display = 'block';
+                    
+                    // Animation pour faire défiler jusqu'au formulaire
+                    deliveryFormContainer.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+
+            // Gestion de la validation du panier
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(checkoutForm);
+                    const data = {
+                        address: formData.get('address'),
+                        postalCode: formData.get('postalCode'),
+                        city: formData.get('city'),
+                        phone: formData.get('phone')
+                    };
+                    
+                    fetch('{{ path('app_cart_checkout') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = `/order/confirmation/${data.invoiceId}`;
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Une erreur est survenue lors de la validation de votre commande.');
+                    });
+                });
+            }
+        });
+    </script>
 {% endblock %}

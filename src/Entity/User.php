@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Watch>
      */
-    #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Watch::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Watch::class, cascade: ['remove'])]
     private Collection $watches;
 
     /**
@@ -79,12 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $postalCode = null;
 
     /**
-     * @var Collection<int, Order>
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class, cascade: ['remove'])]
-    private Collection $orders;
-
-    /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, cascade: ['remove'])]
@@ -101,7 +95,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->watches = new ArrayCollection();
         $this->cart = new ArrayCollection();
         $this->invoices = new ArrayCollection();
-        $this->orders = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->favorites = new ArrayCollection();
     }
@@ -351,36 +344,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPostalCode(?string $postalCode): static
     {
         $this->postalCode = $postalCode;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Order>
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    public function addOrder(Order $order): static
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders->add($order);
-            $order->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrder(Order $order): static
-    {
-        if ($this->orders->removeElement($order)) {
-            // set the owning side to null (unless already changed)
-            if ($order->getUser() === $this) {
-                $order->setUser(null);
-            }
-        }
 
         return $this;
     }

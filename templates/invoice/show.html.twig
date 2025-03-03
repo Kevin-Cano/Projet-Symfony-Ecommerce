@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture #{{ invoice.id }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/invoice.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h1>Facture #{{ invoice.id }}</h1>
+            <p class="invoice-date">Date: {{ invoice.createdAt|date('d/m/Y H:i') }}</p>
+        </div>
+        
+        <div class="invoice-customer">
+            <h2>Client</h2>
+            <p>{{ invoice.user.firstName }} {{ invoice.user.lastName }}</p>
+            <p>{{ invoice.user.email }}</p>
+            {% if invoice.user.deliveryAddress %}
+                <p>{{ invoice.user.deliveryAddress }}</p>
+            {% endif %}
+            {% if invoice.user.postalCode %}
+                <p>{{ invoice.user.postalCode }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="invoice-items">
+            <h2>Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detail in invoice.invoiceDetails %}
+                        <tr>
+                            <td>{{ detail.watch.name }}</td>
+                            <td>{{ detail.quantity }}</td>
+                            <td>{{ detail.price|number_format(2, ',', ' ') }} €</td>
+                            <td>{{ (detail.price * detail.quantity)|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total</td>
+                        <td>{{ invoice.amount|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="invoice-status">
+            <p>Statut: <span class="status-{{ invoice.status }}">{{ invoice.status }}</span></p>
+        </div>
+        
+        <div class="invoice-actions">
+            <a href="{{ path('app_account') }}" class="btn-back">Retour à mon compte</a>
+            <button class="btn-print" onclick="window.print()">Imprimer</button>
+        </div>
+    </div>
+{% endblock %} 

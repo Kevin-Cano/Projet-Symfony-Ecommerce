@@ -1,120 +1,231 @@
-{% block body %}
-    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
+{% extends 'base.html.twig' %}
 
-    <div class="container">
-        <div class="sidebar">
-            <div class="profile">
-                <img src="{{ user.profilePicture ?? asset('images/default-profile.png') }}" alt="Profile Picture">
-                <div class="username-container">
-                    <h1 id="username-display" class="editable-username">{{ user.username }}</h1>
-                    <input type="text" 
-                           id="username-input" 
-                           class="username-edit" 
-                           value="{{ user.username }}" 
-                           maxlength="30" 
-                           style="display: none;">
-                </div>
-                <div class="buttons">
-                    <button data-section="personal-info">Informations personnelles</button>
-                    <button data-section="funds-info">Ajout de fond</button>
-                    <button data-section="security-info">Sécurité</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="personal-info" class="info-section">
-            <h2>Informations personnelles</h2>
-            <div class="info-row">
-                <p>Nombre de montres mises en vente : {{ user.watches|length }}</p>
-                <p>Argent sur le compte : {{ user.balance }}</p>
-            </div>
-            
-            <form id="personal-info-form" class="edit-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">Prénom</label>
-                        <input type="text" id="firstName" name="firstName" value="{{ user.firstName }}" required>
-                        <button type="button" class="edit-btn" data-field="firstName">
-                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
-                        </button>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lastName">Nom</label>
-                        <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required>
-                        <button type="button" class="edit-btn" data-field="lastName">
-                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="deliveryAddress">Adresse</label>
-                        <input type="text" id="deliveryAddress" name="deliveryAddress" value="{{ user.deliveryAddress }}" required>
-                        <button type="button" class="edit-btn" data-field="deliveryAddress">
-                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
-                        </button>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="postalCode">Code postal</label>
-                        <input type="text" id="postalCode" name="postalCode" value="{{ user.postalCode }}" required>
-                        <button type="button" class="edit-btn" data-field="postalCode">
-                            <img src="{{ asset('images/pencil.png') }}" alt="Modifier" class="edit-icon">
-                        </button>
-                    </div>
-                </div>
-
-                <div id="personal-info-message" class="message-container"></div>
-            </form>
-        </div>
-
-        <div id="funds-info" class="info-section">
-            <h2>Ajout de fonds</h2>
-            <div class="balance-display">
-                <p>Solde actuel : <span class="current-balance">{{ user.balance|number_format(2, ',', ' ') }} €</span></p>
-            </div>
-            
-            <div class="add-funds-form">
-                <div class="amount-buttons">
-                    <button class="amount-btn" data-amount="50">50 €</button>
-                    <button class="amount-btn" data-amount="100">100 €</button>
-                    <button class="amount-btn" data-amount="200">200 €</button>
-                    <button class="amount-btn" data-amount="500">500 €</button>
-                </div>
-                
-                <div class="custom-amount">
-                    <input type="number" 
-                           id="custom-amount" 
-                           min="1" 
-                           max="10000" 
-                           step="1" 
-                           placeholder="Montant personnalisé">
-                    <span class="currency">€</span>
-                </div>
-                
-                <button id="add-funds-btn" class="primary-button">Ajouter les fonds</button>
-            </div>
-
-            <div id="funds-message" class="message-container"></div>
-        </div>
-
-        <div id="security-info" class="info-section">
-            <h2>Sécurité</h2>
-            <button data-action="update-phone">Ajouter/Modifier le numéro de téléphone</button>
-            <button data-action="update-password">Modifier le mot de passe</button>
-            <button data-action="delete-account">Supprimer le compte</button>
-        </div>
-    </div>
-
-    <script src="{{ asset('js/profile.js') }}"></script>
-{% endblock %}
+{% block title %}Mon compte - LuxWatch{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('styles/account.css') }}">
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body %}
+<div class="account-container">
+    <div class="account-header">
+        <a href="{{ path('app_home') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Retour au site
+        </a>
+        <h1>Mon compte</h1>
+    </div>
+
+    <div class="account-layout">
+        <!-- Sidebar -->
+        <div class="account-sidebar">
+            <div class="user-profile">
+                <div class="profile-image">
+                    <img src="{{ user.profilePicture ? asset('uploads/profile/' ~ user.profilePicture) : asset('images/default-profile.png') }}" alt="Photo de profil" id="profile-image-preview">
+                    <div class="profile-image-overlay">
+                        <label for="profile-image-upload" class="upload-icon">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="profile-image-upload" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                <h2 class="username">{{ user.userName }}</h2>
+            </div>
+
+            <nav class="account-nav">
+                <button class="nav-button active" data-section="personal-info">
+                    <i class="fas fa-user"></i>
+                    Informations personnelles
+                </button>
+                <button class="nav-button" data-section="funds-info">
+                    <i class="fas fa-wallet"></i>
+                    Ajout de fonds
+                </button>
+                <button class="nav-button" data-section="security-info">
+                    <i class="fas fa-shield-alt"></i>
+                    Sécurité
+                </button>
+                <button class="nav-button" data-section="orders-info">
+                    <i class="fas fa-shopping-bag"></i>
+                    Mes commandes
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="account-content">
+            <!-- Personal Info Section -->
+            <section id="personal-info" class="content-section active">
+                <div class="section-header">
+                    <h2>Informations personnelles</h2>
+                </div>
+                
+                <div class="info-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-watch"></i>
+                        <span class="stat-value">{{ user.watches|length }}</span>
+                        <span class="stat-label">Montres en vente</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-euro-sign"></i>
+                        <span class="stat-value">{{ user.balance|number_format(2, ',', ' ') }} €</span>
+                        <span class="stat-label">Solde disponible</span>
+                    </div>
+                </div>
+
+                <form class="info-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">Prénom</label>
+                            <div class="input-group">
+                                <input type="text" id="firstName" value="{{ user.firstName }}" required>
+                                <button type="button" class="edit-btn" data-field="firstName">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Nom</label>
+                            <div class="input-group">
+                                <input type="text" id="lastName" value="{{ user.lastName }}" required>
+                                <button type="button" class="edit-btn" data-field="lastName">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryAddress">Adresse</label>
+                            <div class="input-group">
+                                <input type="text" id="deliveryAddress" value="{{ user.deliveryAddress }}" required>
+                                <button type="button" class="edit-btn" data-field="deliveryAddress">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postalCode">Code postal</label>
+                            <div class="input-group">
+                                <input type="text" id="postalCode" value="{{ user.postalCode }}" required>
+                                <button type="button" class="edit-btn" data-field="postalCode">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="personal-info-message" class="message-container"></div>
+                </form>
+            </section>
+
+            <!-- Funds Section -->
+            <section id="funds-info" class="content-section">
+                <div class="section-header">
+                    <h2>Ajout de fonds</h2>
+                </div>
+
+                <div class="balance-card">
+                    <div class="balance-info">
+                        <span class="balance-label">Solde actuel</span>
+                        <span class="current-balance">{{ user.balance|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                </div>
+
+                <div class="add-funds-form">
+                    <div class="amount-buttons">
+                        <button type="button" class="amount-btn" data-amount="50">50 €</button>
+                        <button type="button" class="amount-btn" data-amount="100">100 €</button>
+                        <button type="button" class="amount-btn" data-amount="200">200 €</button>
+                        <button type="button" class="amount-btn" data-amount="500">500 €</button>
+                    </div>
+
+                    <div class="custom-amount">
+                        <input type="number" 
+                               id="custom-amount" 
+                               min="1" 
+                               step="1" 
+                               placeholder="Montant personnalisé">
+                        <span class="currency">€</span>
+                    </div>
+
+                    <button type="button" id="add-funds-btn" class="primary-button">
+                        <i class="fas fa-plus"></i> Ajouter les fonds
+                    </button>
+                </div>
+
+                <div id="funds-message" class="message-container"></div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security-info" class="content-section">
+                <div class="section-header">
+                    <h2>Sécurité</h2>
+                </div>
+
+                <div class="security-options">
+                    <button class="security-btn" data-action="update-phone">
+                        <i class="fas fa-phone"></i>
+                        <span>Modifier le numéro de téléphone</span>
+                    </button>
+                    <button class="security-btn" data-action="update-password">
+                        <i class="fas fa-key"></i>
+                        <span>Changer le mot de passe</span>
+                    </button>
+                    <button class="security-btn danger" data-action="delete-account">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Supprimer le compte</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders-info" class="content-section">
+                <div class="section-header">
+                    <h2>Mes commandes</h2>
+                </div>
+                
+                {% if invoices is empty %}
+                    <div class="empty-orders">
+                        <p>Vous n'avez pas encore passé de commande.</p>
+                        <a href="{{ path('app_collection') }}" class="btn-shop">Découvrir notre collection</a>
+                    </div>
+                {% else %}
+                    <div class="orders-list">
+                        <div class="order-header">
+                            <div class="order-id">N° Commande</div>
+                            <div class="order-date">Date</div>
+                            <div class="order-amount">Montant</div>
+                            <div class="order-status">Statut</div>
+                            <div class="order-actions">Actions</div>
+                        </div>
+                        
+                        {% for invoice in invoices %}
+                            <div class="order-item">
+                                <div class="order-id">#{{ invoice.id }}</div>
+                                <div class="order-date">{{ invoice.createdAt|date('d/m/Y') }}</div>
+                                <div class="order-amount">{{ invoice.amount|number_format(2, ',', ' ') }} €</div>
+                                <div class="order-status">
+                                    <span class="status-badge {{ invoice.status|lower }}">{{ invoice.status }}</span>
+                                </div>
+                                <div class="order-actions">
+                                    <a href="{{ path('app_order_confirmation', {'id': invoice.id}) }}" class="btn-view-order">Détails</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/account.js') }}"></script>
+    {{ parent() }}
+    <script src="{{ asset('js/profile.js') }}"></script>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\InvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
@@ -19,27 +20,34 @@ class Invoice
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $phone = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $amount = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: CartItem::class)]
+    private Collection $cartItems;
 
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 10)]
     private ?string $postalCode = null;
 
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    /**
-     * @var Collection<int, CartItem>
-     */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'invoice')]
-    private Collection $cart;
+    #[ORM\Column(length: 20)]
+    private ?string $phone = null;
 
     public function __construct()
     {
-        $this->cart = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -52,21 +60,75 @@ class Invoice
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getAmount(): ?string
     {
-        return $this->phone;
+        return $this->amount;
     }
 
-    public function setPhone(?string $phone): static
+    public function setAmount(string $amount): self
     {
-        $this->phone = $phone;
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CartItem>
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(CartItem $cartItem): self
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(CartItem $cartItem): self
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getInvoice() === $this) {
+                $cartItem->setInvoice(null);
+            }
+        }
 
         return $this;
     }
@@ -76,7 +138,7 @@ class Invoice
         return $this->address;
     }
 
-    public function setAddress(string $address): static
+    public function setAddress(string $address): self
     {
         $this->address = $address;
 
@@ -88,7 +150,7 @@ class Invoice
         return $this->postalCode;
     }
 
-    public function setPostalCode(string $postalCode): static
+    public function setPostalCode(string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -100,40 +162,31 @@ class Invoice
         return $this->city;
     }
 
-    public function setCity(string $city): static
+    public function setCity(string $city): self
     {
         $this->city = $city;
 
         return $this;
     }
 
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
     /**
+     * Alias pour getCartItems() pour compatibilité
      * @return Collection<int, CartItem>
      */
     public function getCart(): Collection
     {
-        return $this->cart;
-    }
-
-    public function addCart(CartItem $cart): static
-    {
-        if (!$this->cart->contains($cart)) {
-            $this->cart->add($cart);
-            $cart->setInvoice($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCart(CartItem $cart): static
-    {
-        if ($this->cart->removeElement($cart)) {
-            // set the owning side to null (unless already changed)
-            if ($cart->getInvoice() === $this) {
-                $cart->setInvoice(null);
-            }
-        }
-
-        return $this;
+        return $this->cartItems;
     }
 }

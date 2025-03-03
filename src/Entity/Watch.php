@@ -33,7 +33,7 @@ class Watch
         $this->publicationDate = new \DateTime();
     }
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'watches')]
+    #[ORM\ManyToOne(inversedBy: 'watches')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['watch:read'])]
     private ?User $author = null;
@@ -120,9 +120,10 @@ class Watch
         return $this->author;
     }
 
-    public function setAuthor(?User $author): self
+    public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
         return $this;
     }
 

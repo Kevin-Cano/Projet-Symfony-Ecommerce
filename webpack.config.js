@@ -1,0 +1,1 @@
+.addEntry('profile', './assets/js/profile.js') 
