@@ -48,6 +48,10 @@
                     <i class="fas fa-shield-alt"></i>
                     Sécurité
                 </button>
+                <button class="nav-button" data-section="my-watches">
+                    <i class="fas fa-watch"></i>
+                    Mes montres publiées
+                </button>
                 <button class="nav-button" data-section="orders-info">
                     <i class="fas fa-shopping-bag"></i>
                     Mes commandes
@@ -220,7 +224,61 @@
                     </div>
                 {% endif %}
             </section>
+
+            <!-- My Watches Section -->
+            <section id="my-watches" class="content-section">
+                <div class="section-header">
+                    <h2>Mes montres publiées</h2>
+                    <a href="{{ path('app_sell') }}" class="add-watch-btn">
+                        <i class="fas fa-plus"></i> Ajouter une montre
+                    </a>
+                </div>
+                
+                {% if user.watches is empty %}
+                    <div class="empty-watches">
+                        <p>Vous n'avez pas encore publié de montres à vendre.</p>
+                        <a href="{{ path('app_sell') }}" class="btn-publish">Publier ma première montre</a>
+                    </div>
+                {% else %}
+                    <div class="watches-grid">
+                        {% for watch in user.watches %}
+                            <div class="watch-card">
+                                <div class="watch-image">
+                                    <img src="{{ watch.picture starts with 'http' or watch.picture starts with '/' ? watch.picture : asset('uploads/watch_pictures/' ~ watch.picture) }}" 
+                                         alt="{{ watch.name }}"
+                                         onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';">
+                                </div>
+                                <div class="watch-info">
+                                    <h3 class="watch-name">{{ watch.name }}</h3>
+                                    <p class="watch-price">{{ watch.price|number_format(2, ',', ' ') }} €</p>
+                                    <p class="watch-status {% if watch.stock.watchStock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                                        {% if watch.stock.watchStock > 0 %}
+                                            En stock ({{ watch.stock.watchStock }})
+                                        {% else %}
+                                            Hors stock
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="watch-actions">
+                                    <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="btn-view">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="{{ path('app_particuliers') }}" class="btn-edit">
+                                        <i class="fas fa-pen"></i> Modifier
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
         </div>
+    </div>
+    
+    <div class="logout-section">
+        <a href="{{ path('app_logout') }}" class="logout-button">
+            <i class="fas fa-sign-out-alt"></i> Se déconnecter
+        </a>
     </div>
 </div>
 {% endblock %}

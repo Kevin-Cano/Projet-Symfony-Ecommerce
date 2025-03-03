@@ -59,6 +59,9 @@ class SellController extends AbstractController
                 }
             }
 
+            // Définir la date de publication
+            $watch->setPublicationDate(new \DateTime());
+            
             $em->persist($watch);
             $em->persist($stock);
             $em->flush();

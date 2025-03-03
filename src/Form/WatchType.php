@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class WatchType extends AbstractType
 {
@@ -20,18 +23,64 @@ class WatchType extends AbstractType
 
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Nom de la montre'
+                'label' => 'Nom de la montre',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un nom pour votre montre',
+                    ]),
+                ],
             ])
-            ->add('price', NumberType::class, [
-                'label' => 'Prix'
+            ->add('price', MoneyType::class, [
+                'label' => 'Prix',
+                'currency' => 'EUR',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un prix pour votre montre',
+                    ]),
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description'
+                'label' => 'Description',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer une description pour votre montre',
+                    ]),
+                ],
+            ])
+            ->add('bracelet', ChoiceType::class, [
+                'label' => 'Type de bracelet',
+                'choices' => [
+                    'Cuir' => 'Cuir',
+                    'Métal/Acier' => 'Métal/Acier',
+                    'Caoutchouc' => 'Caoutchouc',
+                    'Tissu/NATO' => 'Tissu/NATO',
+                    'Céramique' => 'Céramique',
+                    'Or' => 'Or',
+                    'Titane' => 'Titane',
+                    'Autre' => 'Autre',
+                ],
+                'placeholder' => 'Sélectionnez le type',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez sélectionner le type de bracelet',
+                    ]),
+                ],
             ])
             ->add('picture', FileType::class, [
                 'label' => 'Image',
-                'required' => false,
-                'mapped' => false
+                'required' => true,
+                'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, WEBP)',
+                    ])
+                ],
             ])
         ;
 
@@ -47,10 +96,12 @@ class WatchType extends AbstractType
             $builder->add('state', ChoiceType::class, [
                 'label' => 'État',
                 'choices' => [
-                    'Neuf' => 'Neuf',
-                    'Très bon état' => 'Très bon état',
-                    'Bon état' => 'Bon état',
-                    'État moyen' => 'État moyen'
+                    'Neuf avec étiquettes' => 'Neuf avec étiquettes',
+                    'Comme neuf' => 'Comme neuf',
+                    'Excellent' => 'Excellent',
+                    'Bon' => 'Bon',
+                    'Acceptable' => 'Acceptable',
+                    'Vintage' => 'Vintage'
                 ]
             ]);
         }
