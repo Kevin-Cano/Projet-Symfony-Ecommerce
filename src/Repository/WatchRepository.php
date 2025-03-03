@@ -82,4 +82,23 @@ class WatchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function searchWatches(string $query)
+    {
+        $qb = $this->createQueryBuilder('w')
+            ->leftJoin('w.stock', 's')
+            ->addSelect('s')
+            ->leftJoin('w.author', 'a')
+            ->addSelect('a')
+            ->where('w.name LIKE :query')
+            ->orWhere('w.reference LIKE :query')
+            ->orWhere('w.description LIKE :query')
+            ->orWhere('w.movement LIKE :query')
+            ->orWhere('w.material LIKE :query')
+            ->orWhere('w.bracelet LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('w.publicationDate', 'DESC');
+        
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de recherche pour "{{ query }}" - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/collection.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/particuliers.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="collection-container">
+        <h1>Résultats de recherche pour "{{ query }}"</h1>
+        
+        <div class="watches-grid" id="watches-container">
+            {% for watch in watches %}
+                <div class="watch-card" data-price="{{ watch.price }}">
+                    <div class="watch-image">
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}">
+                            <img 
+                                src="{{ watch.picture starts with 'http' or watch.picture starts with '/' ? watch.picture : asset('uploads/watch_pictures/' ~ watch.picture) }}" 
+                                alt="{{ watch.name }}" 
+                                onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                            >
+                        </a>
+                        {% if watch.stock.watchStock <= 0 %}
+                            <div class="out-of-stock-badge">
+                                <span>Hors stock</span>
+                            </div>
+                        {% endif %}
+                        {% if watch.author %}
+                            <div class="watch-seller">
+                                <i class="fas fa-user"></i> {{ watch.author.userName }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="watch-info">
+                        <h3 class="watch-name">{{ watch.name }}</h3>
+                        <span class="watch-price">{{ watch.price|number_format(2, ',', ' ') }} €</span>
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">
+                            Voir détails
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p class="no-results">Aucune montre ne correspond à votre recherche.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %} 
