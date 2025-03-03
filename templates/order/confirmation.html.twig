@@ -23,22 +23,26 @@
                 <h2>Récapitulatif de la commande</h2>
                 <div class="summary-items">
                     {% for item in invoice.cartItems %}
-                        <div class="summary-item">
-                            <div class="item-details">
+                        <div class="order-item">
+                            <div class="order-item-image">
                                 {% if item.watch.picture %}
-                                    <img src="{{ item.watch.picture }}" alt="{{ item.watch.name }}" class="item-image">
+                                    {% if item.watch.picture starts with 'http' %}
+                                        <img src="{{ item.watch.picture }}" alt="{{ item.watch.name }}" onerror="this.src='{{ asset('images/no-image.jpg') }}';">
+                                    {% else %}
+                                        <img src="{{ asset('uploads/watch_pictures/' ~ item.watch.picture) }}" alt="{{ item.watch.name }}" onerror="this.src='{{ asset('images/no-image.jpg') }}';">
+                                    {% endif %}
                                 {% else %}
-                                    <div class="item-image-placeholder">
-                                        <i class="fas fa-watch"></i>
-                                    </div>
+                                    <img src="{{ asset('images/no-image.jpg') }}" alt="{{ item.watch.name }}">
                                 {% endif %}
-                                <div class="item-info">
-                                    <h3>{{ item.watch.name }}</h3>
-                                    <p class="item-reference">Réf: {{ item.watch.reference }}</p>
-                                    <p class="item-quantity">Quantité: {{ item.quantity }}</p>
-                                </div>
                             </div>
-                            <div class="item-price">{{ (item.watch.price * item.quantity)|number_format(2, ',', ' ') }} €</div>
+                            <div class="order-item-details">
+                                <h3>{{ item.watch.name }}</h3>
+                                {% if item.watch.reference %}
+                                    <p>Référence: {{ item.watch.reference }}</p>
+                                {% endif %}
+                                <p>Quantité: {{ item.quantity }}</p>
+                                <p class="order-item-price">{{ (item.watch.price * item.quantity)|number_format(2, ',', ' ') }} €</p>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
