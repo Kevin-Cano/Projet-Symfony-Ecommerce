@@ -4,6 +4,7 @@ setlocal ENABLEDELAYEDEXPANSION
 cd /d "%~dp0"
 
 echo Installation et demarrage de l'application...
+timeout /t 1
 
 echo Demarrage des conteneurs Docker...
 docker compose up -d
@@ -15,6 +16,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b
 )
 echo Installation terminee
+timeout /t 1
 
 echo Reinitialisation de la base de donnees...
 php bin/console doctrine:database:drop --force --if-exists
@@ -23,7 +25,7 @@ php bin/console doctrine:schema:create
 php bin/console doctrine:fixtures:load --no-interaction
 
 echo Base de donnees reinitialisee avec succes!
-
+timeout /t 1
 echo Lancement du serveur Symfony...
 start "Symfony Server" symfony server:start --no-tls --port=8000
 timeout /t 5

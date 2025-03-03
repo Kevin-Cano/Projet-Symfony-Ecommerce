@@ -4,55 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .validate-container {
-            max-width: 800px;
-            margin: 4rem auto;
-            padding: 2rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .validate-container h1 {
-            margin-bottom: 2rem;
-            color: #2D3C4C;
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-        
-        .btn-submit {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #2D3C4C;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-submit:hover {
-            background-color: #1a2530;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('styles/validate.css') }}">
 {% endblock %}
 
 {% block body %}

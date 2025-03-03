@@ -61,24 +61,25 @@
                         <button class="out-of-stock-btn" disabled>Hors stock</button>
                     {% endif %}
                 </div>
-                <div class="info">
-                    <div class="infos">
-                        <img src="{{ asset('images/bouclier.png') }}">
-                        <p>Garantie 5 ans</p>
-                    </div>
-                    <div class="infos">
-                        <img src="{{ asset('images/camion.png') }}">
-                        <p>Livraison gratuite</p>
-                    </div>
-                    <div class="infos">
-                        <img src="{{ asset('images/retour.png') }}">
-                        <p>Retour sous 30 jours</p>
-                    </div>
-                </div>
                 {% if watch.author %}
                     <div class="seller-info">
                         <span class="seller-label">Vendeur:</span>
                         <span class="seller-name">{{ watch.author.userName }}</span>
+                    </div>
+                {% else %} 
+                    <div class="info">
+                        <div class="infos">
+                            <img src="{{ asset('images/bouclier.png') }}">
+                            <p>Garantie 5 ans</p>
+                        </div>
+                        <div class="infos">
+                            <img src="{{ asset('images/camion.png') }}">
+                            <p>Livraison gratuite</p>
+                        </div>
+                        <div class="infos">
+                            <img src="{{ asset('images/retour.png') }}">
+                            <p>Retour sous 30 jours</p>
+                        </div>
                     </div>
                 {% endif %}
             </div>

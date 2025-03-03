@@ -30,9 +30,8 @@ class WatchType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('price', MoneyType::class, [
+            ->add('price', NumberType::class, [
                 'label' => 'Prix',
-                'currency' => 'EUR',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer un prix pour votre montre',

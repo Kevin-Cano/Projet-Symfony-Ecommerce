@@ -93,4 +93,58 @@ function showNotification(message, type) {
             }, 300);
         }, 3000);
     }, 10);
-} 
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des boutons de suppression
+    const removeButtons = document.querySelectorAll('.btn-remove');
+    
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const watchId = this.getAttribute('data-id');
+            const itemElement = this.closest('.wishlist-item');
+            
+            fetch(`/wishlist/remove/${watchId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Animation de suppression
+                    itemElement.style.opacity = '0';
+                    setTimeout(() => {
+                        itemElement.style.height = '0';
+                        itemElement.style.margin = '0';
+                        itemElement.style.padding = '0';
+                        itemElement.style.overflow = 'hidden';
+                        
+                        setTimeout(() => {
+                            itemElement.remove();
+                            
+                            // Vérifier s'il reste des éléments
+                            const remainingItems = document.querySelectorAll('.wishlist-item');
+                            if (remainingItems.length === 0) {
+                                // Afficher le message "liste vide"
+                                const wishlistItems = document.querySelector('.wishlist-items');
+                                wishlistItems.innerHTML = `
+                                    <div class="empty-wishlist">
+                                        <p>Votre liste de souhaits est vide</p>
+                                        <a href="{{ path('app_collection') }}" class="btn-continue">Découvrir notre collection</a>
+                                    </div>
+                                `;
+                            }
+                        }, 300);
+                    }, 300);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
