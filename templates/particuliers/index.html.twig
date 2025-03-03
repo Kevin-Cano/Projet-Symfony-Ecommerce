@@ -1,42 +1,123 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Montres des Particuliers{% endblock %}
+{% block title %}Montres de particuliers - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/collection.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/particuliers.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Montres des Particuliers</h1>
-
-    <div class="watches-list">
-        {% for watch in watches %}
-            <div class="watch-item">
-                <h2>{{ watch.name }}</h2>
-                {% if watch.picture %}
-                    <img src="{{ asset('uploads/watch_pictures/' ~ watch.picture) }}" alt="{{ watch.name }}">
-                {% else %}
-                    <img src="{{ asset('images/no-image.jpg') }}" alt="Image non disponible">
-                {% endif %}
-                <p>Prix: {{ watch.price }} €</p>
-                <p>État: {{ watch.state }}</p>
-                {% if watch.reference %}
-                    <p>Référence: {{ watch.reference }}</p>
-                {% endif %}
-                <p>Vendeur: {{ watch.author.userName }}</p>
-                <div class="actions">
-                    <a href="{{ path('app_watch_details', {'id': watch.id}) }}">Voir les détails</a>
-                    {% if app.user and app.user.id == watch.author.id %}
-                        <a href="{{ path('app_watch_edit', {'id': watch.id}) }}">Modifier</a>
-                    {% endif %}
-                </div>
+    <div class="collection-container">
+        <h1>Montres de particuliers</h1>
+        
+        <div class="div-select">
+            <div>
+                <label for="sort-by">Trier par</label>
+                <select id="sort-by">
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                    <option value="newest">Plus récentes</option>
+                </select>
             </div>
-        {% else %}
-            <p>Aucune montre de particulier disponible pour le moment.</p>
-        {% endfor %}
-    </div>
-
-    {% if app.user %}
-        <div class="sell-section">
-            <a href="{{ path('app_sell') }}">Vendre ma montre</a>
+            
+            <div>
+                <label for="price-range">Prix maximum</label>
+                <input type="range" id="price-range" min="0" max="10000" step="100" value="10000">
+                <span id="price-value">10 000 €</span>
+            </div>
         </div>
-    {% else %}
-        <p>Connectez-vous pour vendre votre montre</p>
-    {% endif %}
+        
+        <div class="watches-grid" id="watches-container">
+            {% for watch in watches %}
+                <div class="watch-card" data-price="{{ watch.price }}">
+                    <div class="watch-image">
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}">
+                            <img 
+                                src="{{ watch.picture starts with 'http' or watch.picture starts with '/' ? watch.picture : asset('uploads/watch_pictures/' ~ watch.picture) }}" 
+                                alt="{{ watch.name }}" 
+                                onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                            >
+                        </a>
+                        {% if watch.stock.watchStock <= 0 %}
+                            <div class="out-of-stock-badge">
+                                <span>Hors stock</span>
+                            </div>
+                        {% endif %}
+                        {% if watch.author %}
+                            <div class="watch-seller">
+                                <i class="fas fa-user"></i> {{ watch.author.userName }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="watch-info">
+                        <h3 class="watch-name">{{ watch.name }}</h3>
+                        <span class="watch-price">{{ watch.price|number_format(2, ',', ' ') }} €</span>
+                        <a href="{{ path('app_watch_details', {'id': watch.id}) }}" class="details-button">
+                            Voir détails
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucune montre disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du tri
+            const sortSelect = document.getElementById('sort-by');
+            const watchesContainer = document.getElementById('watches-container');
+            const watches = Array.from(document.querySelectorAll('.watch-card'));
+            
+            sortSelect.addEventListener('change', function() {
+                const sortValue = this.value;
+                
+                // Trier les montres
+                watches.sort(function(a, b) {
+                    const priceA = parseFloat(a.dataset.price);
+                    const priceB = parseFloat(b.dataset.price);
+                    
+                    if (sortValue === 'price-asc') {
+                        return priceA - priceB;
+                    } else if (sortValue === 'price-desc') {
+                        return priceB - priceA;
+                    } else if (sortValue === 'newest') {
+                        // Pour simplifier, on utilise l'ordre initial
+                        return Array.from(watchesContainer.children).indexOf(a) - 
+                               Array.from(watchesContainer.children).indexOf(b);
+                    }
+                });
+                
+                // Réorganiser les montres dans le DOM
+                watches.forEach(function(watch) {
+                    watchesContainer.appendChild(watch);
+                });
+            });
+            
+            // Gestion du filtre de prix
+            const priceRange = document.getElementById('price-range');
+            const priceValue = document.getElementById('price-value');
+            
+            priceRange.addEventListener('input', function() {
+                const maxPrice = parseInt(this.value);
+                priceValue.textContent = maxPrice.toLocaleString('fr-FR') + ' €';
+                
+                // Filtrer les montres
+                watches.forEach(function(watch) {
+                    const price = parseFloat(watch.dataset.price);
+                    if (price <= maxPrice) {
+                        watch.style.display = 'block';
+                    } else {
+                        watch.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -15,7 +15,12 @@
 
         <div class="watch-details">
             <div class="watch-image-container">
-                <img src="/uploads/watch_pictures/{{ watch.picture }}" alt="{{ watch.name }}" class="watch-image">
+                <img 
+                    src="{{ watch.picture starts with 'http' or watch.picture starts with '/' ? watch.picture : asset('uploads/watch_pictures/' ~ watch.picture) }}" 
+                    alt="{{ watch.name }}" 
+                    class="watch-image"
+                    onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                >
             </div>
             <div class="watch-info">
                 <div>

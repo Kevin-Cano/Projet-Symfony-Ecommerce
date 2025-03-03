@@ -33,17 +33,18 @@
                 <h2>Articles ({{ cartItems|length }})</h2>
                 {% for item in cartItems %}
                     <div class="article">
-                        {% if item.watch.picture %}
-                            <img src="{{ item.watch.picture }}" class="photo" alt="{{ item.watch.name }}">
-                        {% else %}
-                            <div class="photo-placeholder">
-                                <i class="fas fa-watch"></i>
-                            </div>
-                        {% endif %}
+                        <div class="cart-item-image">
+                            <img 
+                                src="{{ item.watch.picture starts with 'http' or item.watch.picture starts with '/' ? item.watch.picture : asset('uploads/watch_pictures/' ~ item.watch.picture) }}" 
+                                alt="{{ item.watch.name }}" 
+                                onerror="this.onerror=null; this.src='{{ asset('images/no-image.jpg') }}';"
+                            >
+                        </div>
                         <div class="nom">
                             <h2>{{ item.watch.name }}</h2>
-                            <p>réf : {{ item.watch.reference }}</p>
-                            <p class="stock">En stock: {{ item.watch.stock.watchStock }}</p>
+                            {% if item.watch.reference %}
+                                <p>réf : {{ item.watch.reference }}</p>
+                            {% endif %}
                         </div>
                         <div class="quantity">
                             <label for="quantity-{{ item.watch.id }}">Qté:</label>
