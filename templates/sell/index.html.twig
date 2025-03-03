@@ -1,20 +1,185 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vendre une montre{% endblock %}
+{% block title %}Vendre une montre - LuxWatch{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/sell.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Vendre une montre</h1>
+<div class="sell-container">
+    <div class="sell-header">
+        <h1>Vendez votre montre sur LuxWatch</h1>
+        <p>Rejoignez notre communauté de passionnés et vendez vos montres de luxe en toute simplicité. Notre plateforme vous offre une visibilité maximale et une sécurité garantie pour vos transactions.</p>
+    </div>
+    
+    <div class="sell-steps-image">
+        <img src="{{ asset('images/sell-steps.png') }}" alt="Processus de vente en 4 étapes" class="img-fluid">
+    </div>
+    
+    <div class="sell-form-container">
+        {{ form_start(form, {'attr': {'id': 'sell-form', 'enctype': 'multipart/form-data'}}) }}
+        <div class="form-section">
+            <h3 class="form-section-title">Informations sur la montre</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    {{ form_label(form.name, 'Nom de la montre*') }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.price, 'Prix (€)*') }}
+                    {{ form_widget(form.price, {'attr': {'class': 'form-control', 'min': '1', 'step': '0.01'}}) }}
+                    {{ form_errors(form.price) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.state, 'État de la montre*') }}
+                    {{ form_widget(form.state, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.state) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.bracelet, 'Type de bracelet*') }}
+                    {{ form_widget(form.bracelet, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.bracelet) }}
+                </div>
+            </div>
+            <div class="form-group full-width">
+                {{ form_label(form.description, 'Description*') }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+                {{ form_errors(form.description) }}
+                <small class="form-text">Décrivez votre montre en détail : état, histoire, caractéristiques, etc.</small>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3 class="form-section-title">Photos</h3>
+            <div class="form-group">
+                <div class="image-preview" id="image-preview">
+                    <img id="preview-img" src="#" alt="Aperçu de l'image">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p class="upload-text">Glissez et déposez votre image ici ou cliquez pour parcourir</p>
+                        <label for="watch_picture" class="upload-button">Parcourir</label>
+                    </div>
+                </div>
+                {{ form_widget(form.picture, {'attr': {'id': 'watch_picture', 'style': 'display: none;', 'accept': 'image/*'}}) }}
+                {{ form_errors(form.picture) }}
+                <small class="form-text">Formats acceptés : JPEG, PNG, WEBP. Taille maximale : 5 Mo.</small>
+            </div>
+        </div>
+        
+        <div class="terms-checkbox">
+            <label for="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                J'accepte les <a href="#">conditions générales de vente</a> et certifie que ma montre est authentique.
+            </label>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Soumettre mon annonce
+            </button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+    
+    <div class="sell-benefits">
+        <h2 class="benefits-title">Pourquoi vendre sur LuxWatch ?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="benefit-title">Communauté de passionnés</h3>
+                <p class="benefit-description">Accédez à une communauté de collectionneurs et d'amateurs de montres de luxe du monde entier.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="benefit-title">Sécurité garantie</h3>
+                <p class="benefit-description">Nos transactions sont sécurisées et nous vérifions l'authenticité de chaque montre avant la mise en vente.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <h3 class="benefit-title">Commissions compétitives</h3>
+                <p class="benefit-description">Nos frais sont parmi les plus bas du marché, vous permettant de maximiser vos profits.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
-
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit" class="btn btn-primary">Mettre en vente</button>
-    {{ form_end(form) }}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prévisualisation de l'image
+            const imageInput = document.getElementById('watch_picture');
+            const imagePreview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.classList.add('has-image');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImg.src = '#';
+                    imagePreview.classList.remove('has-image');
+                }
+            });
+            
+            // Clic sur le bouton de parcourir
+            document.querySelector('.upload-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                imageInput.click();
+            });
+            
+            // Glisser-déposer
+            imagePreview.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#2D3C4C';
+            });
+            
+            imagePreview.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ced4da';
+            });
+            
+            imagePreview.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ced4da';
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.match('image.*')) {
+                    imageInput.files = e.dataTransfer.files;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.classList.add('has-image');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // FAQ accordéon
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const faqItem = this.parentElement;
+                    faqItem.classList.toggle('active');
+                });
+            });
+        });
+    </script>
 {% endblock %}
