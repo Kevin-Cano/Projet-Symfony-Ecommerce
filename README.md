@@ -54,6 +54,12 @@ Puis taper cette commande :
 ```bash
 .\setup-and-start.sh
 ```
+
+## Administration
+#### Comment accéder a la page administrateur ?
+
+Lorsque vous vous connectez, remplisser les champs avec les codes admin que vous aurez rentré au préalable dans votre ``.env.local`` puis rendez-vous sur la page ``/admin``.
+
 <div style="text-align: right;">
 
 ## Crédit

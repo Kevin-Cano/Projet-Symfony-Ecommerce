@@ -20,7 +20,7 @@ class Watch
     #[Groups(['watch:read'])]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 1000, nullable: true)]
     #[Groups(['watch:read'])]
     private ?string $description = null;
 
