@@ -9,10 +9,12 @@ echo "Installation des dépendances..."
 composer install
 
 echo "Réinitialisation de la base de données..."
-bash reset-db.sh
+bash ./reset-db.sh
 
 echo "Lancement du serveur Symfony..."
 symfony server:start -d
+
+php bin/console sass:build
 
 echo "Attente du démarrage du serveur..."
 sleep 5
